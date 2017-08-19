@@ -7,7 +7,9 @@ pgn2scid basically is a convenient GUI wrapper (a graphical user interface for c
 
 But there's more! In detail pgn2scid can:
 
-* keep your database up to date automatically by downloading the PGN game collections kindly provided by The Week in Chesss (http://theweekinchess.com/).
+* run on multiple platforms
+
+* keep your database up to date automatically by downloading the PGN game collections kindly provided by 'The Week in Chesss' (http://theweekinchess.com/).
 
 * keep track of your downloads so that only the latest files which haven’t already been downloaded are displayed.
 
