@@ -11,7 +11,7 @@ But there's more! In detail pgn2scid can:
 
 * keep your database up to date automatically by downloading the PGN game collections kindly provided by 'The Week in Chesss' (http://theweekinchess.com/).
 
-* keep track of your downloads so that only the latest files which haven’t already been downloaded are displayed.
+* keep track of your downloads so that only the latest files which haven’t already been downloaded are selectable.
 
 * process PGN files from other sources, let’s say from your last OTB tournament or games played on a chess server. All you have to do is to put those files in pgn2scid’s working directory.
 
