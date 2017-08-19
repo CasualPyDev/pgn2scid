@@ -9,7 +9,7 @@ But there's more! In detail pgn2scid can:
 
 * run on multiple platforms
 
-* keep your database up to date automatically by downloading the PGN game collections kindly provided by 'The Week in Chesss' (http://theweekinchess.com/).
+* keep your database up to date automatically by downloading the PGN game collections kindly provided by 'The Week in Chess' (http://theweekinchess.com/).
 
 * keep track of your downloads so that only the latest files which haven’t already been downloaded are selectable.
 
