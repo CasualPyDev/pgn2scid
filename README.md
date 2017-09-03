@@ -31,4 +31,4 @@ But there's more! In detail pgn2scid can:
 
 pgn2scid requires Python 3.4 or newer. For Windows users there's a pre-build executable available so that there's no need to download Python first. In this case just download and unzip the file 'pgn2scid_win_executable.zip'. It contains everything you need to run pgn2scid as well as the pdf manual.
 
-Fore more information on how to install and use pgn2scid please read the pdf manual.
+Fore more information on how to install and use pgn2scid please read the mentioned pdf manual.
