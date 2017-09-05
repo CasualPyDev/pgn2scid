@@ -477,7 +477,7 @@ def start_main():
             pgn_count = 0
             write_message("\n\n### Merging PGN files ###", 'black')
             for in_filename in os.listdir(w_dir):
-                if in_filename.endswith('.pgn'):
+                if in_filename.endswith('.pgn') and not in_filename.startswith('p2s'):
                     write_message("\nAdding '" + in_filename + "' to '" + out_filename + "' ... ", 'black')
                     try:
                         with open(out_filename, 'a', errors='ignore') as f_out, fileinput.input(in_filename,
