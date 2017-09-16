@@ -1,6 +1,5 @@
 # Changelog
 
-# pgn2scid.pyw
 ## 1.0 - 2017-08-04
 - initial release
 ### Added
