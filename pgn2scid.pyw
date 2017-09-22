@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # pgn2scid
-# Version: 1.0
+# Version: 1.1
 # Contact: andreaskreisig@gmail.com
 # License: MIT
 
@@ -23,6 +23,7 @@
 # COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 import sys
 
@@ -115,6 +116,13 @@ def start_main():
         file_list = []
         empty_list = False
 
+        def write_logfile(log_text):
+            root_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
+            timestamp = str(datetime.datetime.now().replace(microsecond=0)) + "\n"
+            p2s_logfile = os.path.join(root_dir, "pgn2scid_error.log")
+            with open(p2s_logfile, 'a') as log_input:
+                log_input.write(timestamp + log_text + "\n\n")
+
         def write_message(msg, colour):
             message_frame['state'] = 'normal'
             message_frame.tag_configure('black', foreground='black', justify='left')
@@ -155,14 +163,17 @@ def start_main():
             except urllib.error.HTTPError as http_error:
                 error_flag = True
                 write_result("FAILED", 'red')
-                error_header = "HTTP error"
+                log_text = "NETWORK ERROR - Request information from TWIC server: " + str(http_error.code)
+                write_logfile(log_text)
+                error_header = "Network error"
                 error_text = "An error occurred while trying to request information from TWIC server! The server" \
                              " responded: " + str(http_error.code) + " - " + str(http_error.reason)
                 error_disp(1, error_header, error_text)
-                write_result("FAILED", 'red')
             except urllib.error.URLError as url_error:
                 error_flag = True
                 write_result("FAILED", 'red')
+                log_text = "NETWORK ERROR - Request information from TWIC server: " + str(url_error.reason)
+                write_logfile(log_text)
                 error_header = "Network error"
                 error_text = "An error occurred while trying to request information from TWIC server! Error message: " + str(
                     url_error.reason)
@@ -170,13 +181,15 @@ def start_main():
             except timeout:
                 error_flag = True
                 write_result("FAILED", 'red')
-                error_header = "Timeout error"
+                log_text = "NETWORK ERROR - Connect to TWIC server: connection timed out"
+                write_logfile(log_text)
+                error_header = "Network error"
                 error_text = "A Timeout error occured while trying to connect to TWIC server. Please try again later."
                 error_disp(1, error_header, error_text)
 
             if not error_flag:
                 # A simple regex based HTML parser
-                # Patterns below are for reference. They work, but they might by subject to change.
+                # Patterns below are for reference. They work, but they might be subject to change.
                 # TWIC issue (n)                    /<td>(\d+)</td>/
                 # TWIC date (dd/mm/yyyy)            /<td>(\d{2}/\d{2}/\d{4})</td>/
                 # TWIC info (URL)                   /(http:\/\/www\.\w+\.com\/html\/twic\d+\.html).+read/
@@ -234,9 +247,10 @@ def start_main():
 
                 # Download files and determine the highest TWIC issue number
                 if complete_url_list:
+                    complete_url_list = complete_url_list[::-1]
                     twic_digit = re.compile(r'\d+')
                     for i, url in enumerate(complete_url_list):
-                        filename = str(twic_record[file_list[i]][3][1])
+                        _, _, _, _, filename = url.split('/')
                         write_message("\nDownloading file '" + filename + "' ... ", 'black')
                         try:
                             with urllib.request.urlopen(url, timeout=15) as in_file, open(os.path.join(w_dir, filename),
@@ -249,13 +263,19 @@ def start_main():
                             write_result("DONE", 'green')
                         except urllib.error.HTTPError as http_error:
                             write_result("FAILED", 'red')
-                            error_header = "HTTP error"
+                            log_text = ("NETWORK ERROR - Downloading file " + filename + " from TWIC server: "
+                                        + str(http_error.code) + " - " + str(http_error.reason))
+                            write_logfile(log_text)
+                            error_header = "Network error"
                             error_text = ("An error occurred while trying to download files from TWIC server! The server"
                                           " responded: " + str(http_error.code) + " - " + str(http_error.reason))
                             error_disp(1, error_header, error_text)
                             break
                         except urllib.error.URLError as url_error:
                             write_result("FAILED", 'red')
+                            log_text = ("NETWORK ERROR - Downloading file '" + filename + "' from TWIC server: "
+                                        + str(url_error.reason))
+                            write_logfile(log_text)
                             error_header = "Network error"
                             error_text = "An error occurred while trying to download files from TWIC server! Error message: "\
                                          + str(url_error.reason)
@@ -263,7 +283,9 @@ def start_main():
                             break
                         except timeout:
                             write_result("FAILED", 'red')
-                            error_header = "Timeout error"
+                            log_text = ("NETWORK ERROR - Downloading file '" + filename + "' from TWIC server: connection timed out")
+                            write_logfile(log_text)
+                            error_header = "Network error"
                             error_text = "A Timeout error occured while trying to dowload files from TWIC server. Please try again later."
                             error_disp(1, error_header, error_text)
                             break
@@ -380,17 +402,16 @@ def start_main():
                         write_result("SKIPPED", 'red')
                         continue
                 if member_count == 0:
-                    write_message("\nNo PGN files found in ZIP archive '" + zip_filename + "'!\n", 'black')
+                    write_message("\nNo valid PGN files found in ZIP archive '" + zip_filename + "'!\n", 'black')
 
                 ###############################################################
                 # If option is set delete all zip files after decompressing   #
                 ###############################################################
                 if delete_zip.get():
-                    os.chdir(w_dir)
                     write_message("\nDeleting ZIP files ... ", 'black')
                     try:
                         for zip_filename in zip_files:
-                            os.remove(zip_filename)
+                            os.remove(os.path.join(w_dir, zip_filename))
                         write_result("DONE", 'green')
                     except OSError as os_error:
                         write_result("FAILED", 'red')
@@ -469,14 +490,14 @@ def start_main():
         ########################################
         if do_merge.get():
             action_flag = True
-            os.chdir(w_dir)
             pgn_count = 0
             write_message("\n\n### Merging PGN files ###", 'black')
             for in_filename in os.listdir(w_dir):
                 if in_filename.endswith('.pgn') and not in_filename.startswith('p2s'):
                     write_message("\nAdding '" + in_filename + "' to '" + out_filename + "' ... ", 'black')
                     try:
-                        with open(out_filename, 'a', errors='ignore') as f_out, fileinput.input(in_filename,
+                        with open(out_filename, 'a', errors='ignore') as f_out, fileinput.input(
+                                os.path.join(w_dir, in_filename),
                                 openhook=fileinput.hook_encoded('latin-1')) as f_in:
                             for line in f_in:
                                 f_out.write(line)
@@ -501,12 +522,11 @@ def start_main():
             # If option is set delete all pgn files after merging             #
             ###################################################################
             if delete_pgn.get() and pgn_count > 0:
-                os.chdir(w_dir)
                 write_message("\nDeleting PGN files ... ", 'black')
                 for filename in os.listdir(w_dir):
                     if not filename.startswith("p2s") and filename.endswith('.pgn'):
                         try:
-                            os.remove(filename)
+                            os.remove(os.path.join(w_dir, filename))
                         except OSError as os_error:
                             write_result("FAILED", 'red')
                             write_message("\nSTOPPED", 'black')
@@ -581,7 +601,6 @@ def start_main():
         if do_scid.get():
             action_flag = True
             pgn_count = games_count = players_count = events_count = sites_count = 0
-            os.chdir(w_dir)
 
             write_message("\n\n### Converting PGN files to native Scid format ### ", 'black')
             for filename in os.listdir(w_dir):
@@ -594,7 +613,7 @@ def start_main():
                     pgn_count += 1
                     write_message("\nConverting " + filename + " ... ", "black")
                     try:
-                        pgnscid_output = subprocess.check_output(["pgnscid", filename], shell=False,
+                        pgnscid_output = subprocess.check_output(["pgnscid", os.path.join(w_dir, filename)], shell=False,
                                                                  stderr=subprocess.STDOUT)
                         while not pgnscid_output:
                             time.sleep(0.5)
@@ -622,7 +641,6 @@ def start_main():
                         for scid_suffix in ['.si4', '.sg4', '.sn4']:
                             try:
                                 os.remove(filename[:-4] + scid_suffix)
-                                pgn_count -= 1
                             except OSError as os_error:
                                 write_message("\nSTOPPED", 'black')
                                 error_disp(1, "Unexpected error",
@@ -633,6 +651,7 @@ def start_main():
                                             + "\n\npgn2scid has been STOPPED!")
                                 start_action_button['state'] = 'normal'
                                 return
+                        pgn_count -= 1
                         log_text += filename + (": file SUSPENDED by user!\nSuspended file moved to "
                                                 + os.path.join(root_dir, "suspended_pgn_files") + "\n\n")
                         with open(p2s_logfile, 'a', errors='ignore') as logfile:
@@ -697,12 +716,11 @@ def start_main():
             # If option is set delete all pgn file                            #
             ###################################################################
             if delete_mpgn.get() and pgn_count > 0:
-                os.chdir(w_dir)
                 write_message("\nDeleting remaining PGN files ...", "black")
                 for filename in os.listdir(w_dir):
                     if filename.endswith('.pgn'):
                         try:
-                            os.remove(filename)
+                            os.remove(os.path.join(w_dir, filename))
                         except OSError as os_error:
                             write_message("\nSTOPPED", 'black')
                             error_disp(1, "Unexpected error",
@@ -711,8 +729,8 @@ def start_main():
                                         + str(os_error)
                                         + "\n\npgn2scid has been STOPPED!")
                             start_action_button['state'] = 'normal'
-                            return
                             write_result("FAILED", "red")
+                            return
                 write_result("DONE", "green")
 
             ###################################################################
@@ -740,30 +758,31 @@ def start_main():
                 pgn_list = []
                 write_message("\nMoving remaining PGN files to folder 'pgn_files' ... ", 'black')
                 pgn_dir = os.path.join(root_dir, 'pgn_files')
-                for pgns in os.listdir(pgn_dir):
-                    pgn_list.append(pgns)
+                try:
+                    for pgns in os.listdir(pgn_dir):
+                        pgn_list.append(pgns)
 
-                for filename in os.listdir(w_dir):
-                    if filename.endswith('.pgn'):
-                        file_index += 1
-                        if filename in pgn_dir:
-                            new_filename = auto_rename(filename, pgn_dir)
-                        else:
-                            new_filename = filename
-                        source = os.path.join(w_dir, filename)
-                        destination = os.path.join(root_dir, 'pgn_files', new_filename)
-                        try:
+                    for filename in os.listdir(w_dir):
+                        if filename.endswith('.pgn'):
+                            file_index += 1
+                            if filename in pgn_dir:
+                                new_filename = auto_rename(filename, pgn_dir)
+                            else:
+                                new_filename = filename
+                            source = os.path.join(w_dir, filename)
+                            destination = os.path.join(root_dir, 'pgn_files', new_filename)
                             shutil.move(source, destination)
                             move_index += 1
-                        except OSError as os_error:
-                            write_message("\nSTOPPED", 'black')
-                            error_disp(1, "Unexpected error",
-                                        "An unexpected error occured while\n"
-                                        "trying to move remaining PGN files!\n"
-                                        + str(os_error)
-                                        + "\n\npgn2scid has been STOPPED!")
-                            start_action_button['state'] = 'normal'
-                            return
+                except OSError as os_error:
+                    write_result("FAILED", 'red')
+                    write_message("\n\nSTOPPED", 'black')
+                    error_disp(1, "Unexpected error",
+                                "An unexpected error occured while\n"
+                                "trying to move remaining PGN files!\n"
+                                + str(os_error)
+                                + "\n\npgn2scid has been STOPPED!")
+                    start_action_button['state'] = 'normal'
+                    return
                 if move_index == file_index:
                     write_result("DONE", 'green')
                 else:
@@ -874,16 +893,15 @@ def start_main():
                 write_result("SKIPPED", 'red')
 
             ###################################################################
-            # If option is set delete remaining Scid files                    #
+            # If option is set delete remaining Scid files                      #
             ###################################################################
             if delete_scidfile.get() and si4_count > 0:
-                os.chdir(w_dir)
                 write_message("\nDeleting remaining Scid files ...", 'black')
                 for filename in os.listdir(w_dir):
                     for scid_suffix in ['.si4', '.sg4', '.sn4']:
                         if filename.endswith(scid_suffix) and filename != os.path.basename(existing_scid_db):
                             try:
-                                os.remove(filename)
+                                os.remove(os.path.join(w_dir, filename))
                             except OSError as os_error:
                                 write_result("FAILED", "red")
                                 write_message("\nSTOPPED", 'black')
@@ -910,8 +928,13 @@ def start_main():
                             os.makedirs(os.path.join(root_dir, 'scid_files'))
                             write_result("DONE", 'green')
                         except OSError as os_error:
-                            write_message("\nSTOPPED", 'black')
-
+                            write_message("\n\nSTOPPED", 'black')
+                            error_disp(1, "Unexpected error",
+                                        "An unexpected error occured while\n"
+                                        "trying to move remaining Scid files!\n"
+                                        + str(os_error)
+                                        + "\n\npgn2scid has been STOPPED!")
+                            start_action_button['state'] = 'normal'
                             write_result("FAILED", "red")
                             return
                     scid_list = []
@@ -1269,7 +1292,7 @@ def check_for_errors(w_dir, root_dir):
             log_content = error_text_frame.get("1.0", "end-2c")
             # Remove original pgnscid error logfile
             os.remove(path_to_logfile)
-            # Create own logfile if not already existent
+            # Create master logfile if not already existent
             p2s_logfile = os.path.join(root_dir, "pgn2scid_error.log")
             if not os.path.isfile(p2s_logfile):
                 open(p2s_logfile, 'a').close()
@@ -1357,8 +1380,7 @@ def check_preconditions(OP_SYS):
 
     if not os.path.isdir(w_dir):
         error_header = "Invalid path"
-        error_text = "Working path doesn't exist. Please make sure " \
-                     "to specify a valid path."
+        error_text = "Working path doesn't exist. Please specify a valid path."
         error_disp(1, error_header, error_text)
         return False
 
@@ -1389,7 +1411,7 @@ def check_preconditions(OP_SYS):
     if do_scmerge.get() and not os.path.isfile(file_select_db.get()):
         error_header = "No database selected"
         error_text = "No valid Scid database selected. " \
-                     "Please make sure to specify a valid path " \
+                     "Please specify a valid path " \
                      "and file."
         error_disp(1, error_header, error_text)
         return False
@@ -1582,7 +1604,7 @@ message_frame.tag_configure("center", justify="center")
 message_frame.grid(column=0, row=0, columnspan=4, padx=5, pady=5)
 message_frame["state"] = "normal"
 
-message_frame.insert(END, "pgn2scid v1.0\n", "center")
+message_frame.insert(END, "pgn2scid v1.1\n", "center")
 message_frame.insert(END, "Copyright (c) 2017 by Andreas Kreisig\n", "center")
 message_frame.insert(END, "Released under the terms of the MIT license \n", "center")
 message_frame.insert(END, "This program comes with absolutely NO WARRANTY!\n", "center")
