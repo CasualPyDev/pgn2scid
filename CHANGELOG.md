@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## 1.1 - 2017-08-19
+## 1.1 - 2017-08-23
 ### Added
 - All network errors now cause an entry in the master logfile (pgn2scid_error.log)
 
