@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 - All network errors now cause an entry in the master logfile (pgn2scid_error.log)
 
 ### Fixed
-- After an interrupted download caused by a network error pgn2scid don't save the correct TWIC issue number for the last successfuly downloaded file - fixed
+- After an interrupted download caused by a network error pgn2scid doesn't save the correct TWIC issue number for the last successfuly downloaded file - fixed
 - After PGN to Scid conversion pgn2scid displays a summary even when the only converted file has been suspended - fixed
 - When pgn2scid runs into a PGN to Scid conversion error for the first time, it creates a 'suspended_pgn_files' folder even when there's no file moved to this folder - fixed
 
