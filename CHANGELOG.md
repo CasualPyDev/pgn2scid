@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.1](/releases/tag/v1.1) - 2017-08-23
+## [1.1](/pgn2scid/releases/tag/v1.1) - 2017-08-23
 ### Added
 - All network errors now cause an entry in the master logfile (pgn2scid_error.log)
 
@@ -14,7 +14,7 @@ All notable changes to this project will be documented in this file.
 - File pgn2scid_manual.pdf updated to rev 1.1.a
 - File pgn2scid_win_executable.zip updated to v1.1
 
-## [1.0](/releases/tag/v1.0) - 2017-08-04
+## [1.0](/pgn2scid/releases/tag/v1.0) - 2017-08-04
 - initial release
 
 ### Added
