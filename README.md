@@ -35,6 +35,7 @@ pgn2scid requires Python 3.4 or newer. For Windows users there's a pre-build exe
 For Mac users there's now a very convenient way to use pgn2scid. Thanks to Kayvan Sylvan there'a Docker container available which enables you to use pgn2scid without installing Python or any other dependenies which would otherwise be necessary. If you are unfamiliar with the concepts of Docker software containers you can get some information on https://www.docker.com/what-docker
 
 If you would like to give it a try please visit
+
 https://github.com/ksylvan/docker-pgn2scid
 
 https://hub.docker.com/r/kayvan/pgn2scid/
