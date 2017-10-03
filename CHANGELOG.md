@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 - When pgn2scid runs into a PGN to Scid conversion error for the first time, it creates a 'suspended_pgn_files' folder even when there's no file moved to this folder - fixed
 
 ### Changed
-- File pgn2scid_manual.pdf updated to rev 1.1.a
+- File pgn2scid_manual.pdf updated to rev 1.1.b
 - File pgn2scid_win_executable.zip updated to v1.1
 
 ## [1.0](https://github.com/CasualPyDev/pgn2scid/releases/tag/v1.0) - 2017-08-04
