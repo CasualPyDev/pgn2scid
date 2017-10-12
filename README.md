@@ -1,7 +1,7 @@
 # pgn2scid
 A convenient  GUI wrapper for scmerge and pgnscid with some extra functionality
 
-What is pgn2scid?
+### What is pgn2scid?
 
 pgn2scid basically is a convenient GUI wrapper (a graphical user interface for command line tools) for 'pgnscid' and 'scmerge', two programs to convert PGN files to native 'Scid' database files and to merge a number of 'Scid' files with an existing 'Scid' database. Both tools should be part of a standard 'Scid vs. PC' installation.
 
