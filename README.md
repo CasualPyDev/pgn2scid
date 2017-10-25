@@ -40,4 +40,4 @@ https://github.com/ksylvan/docker-pgn2scid
 
 https://hub.docker.com/r/kayvan/pgn2scid/
 
-Please read the PDF manual for generall information on how to install and use pgn2scid.
+Please read the PDF manual for general information on how to install and use pgn2scid.
