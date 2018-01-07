@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 ## 1.4 - TBA
 ### Unreleased
 - pgn2scid is currently undergoing a major redevelopment and code reorganisation effort. The actual code base (v1.4) is reaching 2000 lines of
-code now and it is still growing. To keep readability and maintainability it requires modularisation
+code by now and it is still growing. To keep readability and maintainability it requires modularisation
 and turning away from the somewhat hacky procedural programming style to OOP. There are also new features
 in the pipeline so stay tuned.
 
