@@ -405,6 +405,9 @@ def start_main():
                     if member_count == 0:
                         write_message("\nNo valid PGN files found in ZIP archive '" + zip_filename + "'!\n", 'black')
                 else:
+                    write_message("\nNo ZIP files found to decompress ... ", 'black')
+                    write_result("SKIPPED", 'red')
+
                     break
 
                 ###############################################################
@@ -484,9 +487,7 @@ def start_main():
                     else:
                         write_result("FAILED", 'red')
 
-            else:
-                write_message("\nNo ZIP files found to decompress ... ", 'black')
-                write_result("SKIPPED", 'red')
+
 
         ########################################
         # If option is set merge all pgn files #
