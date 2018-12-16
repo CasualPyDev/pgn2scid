@@ -19,11 +19,11 @@ But there's more! In detail pgn2scid can:
 
 * automatically merge a number of PGN files into one single file.
 
-* convert any number of PGN files to the native 'Scid' database format without the hassle of using command line tools.
+* convert any number of PGN files to the native Scid database format without the hassle of using command line tools.
 
-* create a zipped backup of an existing 'Scid' database before performing any database merge operations.
+* create a zipped backup of an existing Scid database before performing any database merge operations.
 
-* add any number of 'Scid' files to an existing database also without to use a command line tool.
+* add any number of Scid files to an existing database also without to use a command line tool.
 
 * every step described above is optional.
 
