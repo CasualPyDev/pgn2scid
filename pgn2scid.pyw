@@ -1563,12 +1563,12 @@ ggrIWcAAAgAQQCAAOw==
 warning_icon = PhotoImage(data=warning_icon_b64)
 
 open_database_icon_b64 = '''\
-R0lGODlhFAAUAIABAAAAAP///yH5BAEKAAEALAAAAAAUABQAAAIjhI+pwerIwptt2osziLz7qiVRaIwkSKbq8bXdWkqpGaLwjRUAOw==
+R0lGODlhFAAUAIABAE1XXv///yH5BAEKAAEALAAAAAAUABQAAAIjhI+pwerIwptt2osziLz7qiVgGIXGaKbq+bXcyqqlicL2VQAAOw==
 '''
 open_database_icon = PhotoImage(data=open_database_icon_b64)
 
 open_folder_icon_b64 = '''\
-R0lGODlhFAASAIABAAAAAP///yH5BAEKAAEALAAAAAAUABIAAAIajI8Gy5vf4kOx2ouznJzqD4biSJbmiaZqWQAAOw==
+R0lGODlhFAASAIABAE1XXv///yH5BAEKAAEALAAAAAAUABIAAAIajI8Gy5vf4kOx2ouznJzqD4biSJbmiaZqWQAAOw==
 '''
 open_folder_icon = PhotoImage(data=open_folder_icon_b64)
 
