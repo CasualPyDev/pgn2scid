@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [1.2](https://github.com/CasualPyDev/pgn2scid/releases/tag/v1.2) - 2018-12-16
 ### Fixed
 - Fixed a problem with nested ZIP files
-- pgn2sicd now ignores hidden MAC OSX folders (__MACOSX) in ZIP files because they can
+- pgn2scid now ignores hidden MAC OSX folders (__MACOSX) in ZIP files because they can
 cause some trouble in the unzip routine on non MAC machines
 - New icon set with transparent background to fix some visual problems
 
