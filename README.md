@@ -17,7 +17,7 @@ But there's more! In detail pgn2scid can:
 
 * automatically uncompress zipped PGN files.
 
-* automatically merge PGN files into one single file.
+* automatically merge multiple PGN files into one single file.
 
 * convert any number of PGN files to the native Scid database format without the hassle of using command line tools.
 
