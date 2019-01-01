@@ -13,7 +13,7 @@ But there's more! In detail pgn2scid can:
 
 * keep track of your downloads so that only the latest files which haven’t already been downloaded are selectable.
 
-* process PGN files from other sources, e.g. from your last OTB tournament or games played on a chess server. All you have to do is to copy those files in pgn2scid’s working directory, select the desired options and press the 'START' button.
+* process PGN files from other sources, e.g. from your last OTB tournament or games played on a chess server. All you have to do is to copy those files into pgn2scid’s working directory, select the desired options and press the 'START' button.
 
 * automatically uncompress zipped PGN files.
 
