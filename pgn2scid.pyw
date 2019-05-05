@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
 # pgn2scid
-# Version: 1.2
+# Version: 1.3
 # Contact: andreaskreisig@gmail.com
 # License: MIT
 
-# Copyright (c) 2018 Andreas Kreisig
+# Copyright (c) 2017 - 2019 Andreas Kreisig
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in
@@ -58,6 +58,7 @@ import time
 # non critical error or warnings.  Warnings may also be displayed
 # in the console window. Error levels >2 are for special purposes only.
 def error_disp(err_level, err_head, err_msg, *args):
+    root_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
     if args:
         tk_parent = twic_file_select_window
     else:
@@ -68,14 +69,14 @@ def error_disp(err_level, err_head, err_msg, *args):
         messagebox.showwarning(err_head, err_msg, parent=tk_parent)
     elif err_level == 3:
         w_dir = path_select_frame.get()
-        root_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
         os.chdir(root_dir)
         if messagebox.askyesno(err_head, err_msg):
             if not os.path.isdir('pgn_files'):
                 try:
                     os.makedirs('pgn_files')
                 except OSError:
-                    sys.stderr.write("\nException: error while creating folder!")
+                    sys.stderr.write("\nException error while creating folder in " + root_dir)
+                    sys.exit(1)
             for p2s_filename in os.listdir(w_dir):
                 if p2s_filename.startswith('p2s') and p2s_filename.endswith('.pgn'):
                     source = os.path.join(w_dir, p2s_filename)
@@ -83,20 +84,51 @@ def error_disp(err_level, err_head, err_msg, *args):
                     try:
                         shutil.move(source, destination)
                     except OSError:
-                        sys.stderr.write("\nExeption: error while moving files!")
+                        sys.stderr.write("\nException error while moving files to " + destination)
+                        sys.exit(1)
     elif err_level == 4:
         if messagebox.askyesno(err_head, err_msg, parent=tk_parent):
             create_copy = True
         else:
             create_copy = False
         return create_copy
+    elif err_level == 5:
+        auto_rename_list= []  # Add Scid files with the same basename to pass this list to func auto_rename
+        scid_list = []  # Add all existing files in 'scid_files' to this list
+        w_dir = path_select_frame.get()
+        os.chdir(root_dir)
+        if messagebox.askyesno(err_head, err_msg, parent=tk_parent):
+            if not os.path.isdir('scid_files'):
+                try:
+                    os.makedirs('scid_files')
+                except OSError:
+                    sys.stderr.write("\nException error while creating folder in " + root_dir)
+                    sys.exit(1)
+            scid_dir = os.path.join(root_dir, 'scid_files')
+            for sc_file_list in os.listdir(scid_dir):
+                scid_list.extend(sc_file_list)
+            for filename in os.listdir(w_dir):
+                for scid_suffix in ['.si4', '.sg4', '.sn4']:
+                    if filename.endswith(scid_suffix) and filename in scid_list:
+                        auto_rename_list.extend(filename)
+                new_filename_list = auto_rename(auto_rename_list, scid_dir)
+                # else:
+                #     new_filename = filename
+                for i in new_filename_list:
+                    source = os.path.join(w_dir, new_filename_list[i])
+                    destination = os.path.join(root_dir, "scid_files", new_filename_list[i])
+                    try:
+                        os.rename(source, destination)
+                    except OSError:
+                        sys.stderr.write("\nException error while moving old Scif files to " + destination)
+                        sys.exit(1)
 
 
 def start_main():
     global twic_max
     action_flag = False
     OP_SYS = platform.system()
-    uzip_list = []  # empty list to be filled with all extracted zip file names to check for doubles
+
     dt = datetime.datetime.now()
     # Create a unique filename for merged pgn files and for Scid backup
     # File name is a time stamp. Format: p2s_yy-mm-dd_hh-mm-ss.pgn
@@ -147,7 +179,6 @@ def start_main():
         ######################################################################
         # If option is set download files from TWIC server                   #
         ######################################################################
-
         if twic_dl.get():
             action_flag = True
             os.chdir(w_dir)
@@ -246,7 +277,7 @@ def start_main():
 
                 # Download files and determine the highest TWIC issue number
                 if complete_url_list:
-                    complete_url_list = complete_url_list[::-1]
+                    complete_url_list.reverse()
                     twic_digit = re.compile(r'\d+')
                     for i, url in enumerate(complete_url_list):
                         _, _, _, _, filename = url.split('/')
@@ -294,14 +325,27 @@ def start_main():
         #############################################################################
         if do_zip.get():
             action_flag = True
+            zip_flag = False
             os.chdir(w_dir)
             member_count = 0
             do_not_ask = False
+            uzip_set = set()
+            uzip_old_set = set()
+            zipfiles_old_set = set()
             write_message("\n\n### Extracting PGN files from ZIP archives ###", 'black')
             while 1:
+                uzip_set.clear()  # empty set to be filled with all extracted zip file names to check for doubles
                 zip_files = glob.glob('*.zip')
+                zip_set = set(zip_files)
                 if zip_files:
-                    for zip_filename in zip_files:  # Iterate over all zip files
+                    if zip_flag:
+                        zipfiles_set = set(zip_set.difference(zipfiles_old_set))
+                    else:
+                        zipfiles_set = set(zip_set)
+                    if not zipfiles_set:
+                        break
+                    zip_flag = True
+                    for zip_filename in zipfiles_set:  # Iterate over all zip files
                         try:
                             with zipfile.ZipFile(zip_filename) as zip_members:
                                 for member in zip_members.namelist():  # A single member within the zip file
@@ -313,7 +357,7 @@ def start_main():
                                     if member[-3:] == 'pgn' or member[-3:] == 'zip':
                                         write_message("\nExtracting '" + member + "' from archive '" + zip_filename + "' ... ",
                                                       "black")
-                                        if member in uzip_list:  # Does the filename already exists?
+                                        if member in uzip_set and member not in zipfiles_old_set:  # Does the filename already exists?
                                             if not do_not_ask:
                                                 custom_msg_header = "File already exists!"
                                                 custom_msg_text = "Extracting pgn files: the file '" + member + "' already exists!\n" "How to proceed?"
@@ -325,8 +369,7 @@ def start_main():
                                                                                     dont_ask_flag, button1, button2, button3)
 
                                             if choice == 1:
-                                                # Skip / don't unzip the actual zip
-                                                # member
+                                                # Skip / don't unzip the actual zip member
                                                 write_result("SKIPPED", 'red')
                                                 continue
                                             elif choice == 2:
@@ -335,7 +378,7 @@ def start_main():
                                                     with open(os.path.join(w_dir, member), 'wb') as target:
                                                         shutil.copyfileobj(source, target)
                                                 member_count += 1
-                                                uzip_list.append(member)
+                                                uzip_set.add(member)
                                                 write_result("DONE", 'green')
                                                 continue
                                             elif choice == 3:
@@ -381,7 +424,7 @@ def start_main():
                                                     return
 
                                                 member_count += 1
-                                                uzip_list.append(new_filename)
+                                                uzip_set.add(new_filename)
                                                 if os.path.isdir(os.path.join(w_dir, 'tmp')):
                                                     shutil.rmtree(tmp_dir, ignore_errors=True)
                                         else:
@@ -390,30 +433,33 @@ def start_main():
                                                     shutil.copyfileobj(source, target)
                                             write_result("DONE", 'green')
                                             member_count += 1
-                                            uzip_list.append(member)
+                                            uzip_set.add(member)
                                     else:
                                         write_message(
                                             "\nThe file '" + member + "' from archive '" + zip_filename + "' seems not the be a pgn file ... ",
                                             'black')
                                         write_result("SKIPPED", 'red')
+                                uzip_old_set.union(uzip_set)
                         except BadZipFile as bad_zip_file:
                             write_message("\nDecompressing '" + zip_filename + "' ... ", 'black')
-                            error_disp(1, "Unzip Error", "An error orcured while trying to decompress '" + zip_filename + "'!"
+                            error_disp(1, "Unzip Error", "An error occurred while trying to decompress '" + zip_filename + "'!"
                                        + "\nError message: " + str(bad_zip_file))
                             write_result("SKIPPED", 'red')
                             continue
+                    zipfiles_old_set = zipfiles_old_set.union(zipfiles_set)
                     if member_count == 0:
                         write_message("\nNo valid PGN files found in ZIP archive '" + zip_filename + "'!\n", 'black')
+
                 else:
                     write_message("\nNo ZIP files found to decompress ... ", 'black')
                     write_result("SKIPPED", 'red')
-
                     break
 
-                ###############################################################
-                # If option is set delete all zip files after decompressing   #
-                ###############################################################
-                if delete_zip.get():
+            ###############################################################
+            # If option is set delete all zip files after decompressing   #
+            ###############################################################
+            if delete_zip.get():
+                if zip_flag:
                     write_message("\nDeleting ZIP files ... ", 'black')
                     try:
                         for zip_filename in zip_files:
@@ -430,30 +476,31 @@ def start_main():
                         start_action_button['state'] = 'normal'
                         return
 
-                ###############################################################
-                # If no deletion is desired, move all zip files to folder     #
-                # "zip_files" to keep the working directory clean.            #
-                ###############################################################
-                else:
-                    move_index = 0
-                    file_index = 0
-                    if not os.path.isdir(os.path.join(root_dir, 'zip_files')):
-                        write_message("\nCreating folder 'zip_files' ...", 'black')
-                        try:
-                            os.makedirs(os.path.join(root_dir, 'zip_files'))
-                            write_result("DONE", 'green')
-                        except OSError as os_error:
-                            write_result("FAILED", 'red')
-                            write_message("\nSTOPPED", 'black')
-                            error_disp(1, "Unexpected error",
-                                        "An unexpected error occured while\n"
-                                        "trying to create the folder 'zip_files'!\n"
-                                        + str(os_error)
-                                        + "\n\npgn2scid has been STOPPED!")
-                            start_action_button['state'] = 'normal'
-                            return
+            ###############################################################
+            # If no deletion is desired, move all zip files to folder     #
+            # "zip_files" to keep the working directory clean.            #
+            ###############################################################
+            else:
+                move_index = 0
+                file_index = 0
+                if not os.path.isdir(os.path.join(root_dir, 'zip_files')):
+                    write_message("\nCreating folder 'zip_files' ...", 'black')
+                    try:
+                        os.makedirs(os.path.join(root_dir, 'zip_files'))
+                        write_result("DONE", 'green')
+                    except OSError as os_error:
+                        write_result("FAILED", 'red')
+                        write_message("\nSTOPPED", 'black')
+                        error_disp(1, "Unexpected error",
+                                    "An unexpected error occured while\n"
+                                    "trying to create the folder 'zip_files'!\n"
+                                    + str(os_error)
+                                    + "\n\npgn2scid has been STOPPED!")
+                        start_action_button['state'] = 'normal'
+                        return
 
-                    zip_list = []
+                zip_list = []
+                if zip_flag:
                     write_message("\nMoving ZIP files to folder 'zip_files' ... ", 'black')
                     zip_dir = os.path.join(root_dir, 'zip_files')
                     for zips in os.listdir(zip_dir):
@@ -486,8 +533,6 @@ def start_main():
                         write_result("DONE", 'green')
                     else:
                         write_result("FAILED", 'red')
-
-
 
         ########################################
         # If option is set merge all pgn files #
@@ -606,13 +651,14 @@ def start_main():
             action_flag = True
             pgn_count = games_count = players_count = events_count = sites_count = 0
 
+            # Define some regex patterns to display a brief summary based on the pgnscid output
+            games_stat = re.compile(r'[^`\w+](\d+)\s(games)')
+            players_stat = re.compile(r'[^`\w+](\d+)\s(players)')
+            events_stat = re.compile(r'[^`\w+](\d+)\s(events)')
+            sites_stat = re.compile(r'[^`\w+](\d+)\s(sites)')
+
             write_message("\n\n### Converting PGN files to native Scid format ### ", 'black')
             for filename in os.listdir(w_dir):
-                # Define some regex patterns to display a brief statistic based on the pgnscid output
-                games_stat = re.compile(r'[^`\w+](\d+)\s(games)')
-                players_stat = re.compile(r'[^`\w+](\d+)\s(players)')
-                events_stat = re.compile(r'[^`\w+](\d+)\s(events)')
-                sites_stat = re.compile(r'[^`\w+](\d+)\s(sites)')
                 if filename.endswith(".pgn"):
                     pgn_count += 1
                     write_message("\nConverting " + filename + " ... ", "black")
@@ -689,7 +735,7 @@ def start_main():
                             start_action_button['state'] = 'normal'
                             return
 
-                    if return_val == 0 or return_val == 1:
+                    if return_val == (0 or 1):
                         games_x = games_stat.search(pgnscid_output)
                         games_stat = int(games_x.group(1))
                         games_count += games_stat
@@ -720,7 +766,7 @@ def start_main():
             # If option is set delete all pgn file                            #
             ###################################################################
             if delete_mpgn.get() and pgn_count > 0:
-                write_message("\nDeleting remaining PGN files ...", "black")
+                write_message("\nDeleting remaining PGN files ... ", "black")
                 for filename in os.listdir(w_dir):
                     if filename.endswith('.pgn'):
                         try:
@@ -805,7 +851,6 @@ def start_main():
             if zip_scid_db.get():
                 create_zip = True
                 os.chdir(w_dir)
-                # os.chdir(os.path.dirname(existing_scid_db))
                 write_message("\nCreating a ZIP compressed copy of the existing database ... ", 'black')
                 si4_files = glob.glob('*.si4')
                 if not si4_files:
@@ -876,7 +921,7 @@ def start_main():
                         write_result("DONE", 'green')
                     except subprocess.CalledProcessError as process_error:
                         out_text = process_error.output.decode('utf-8')
-                        error_header = "smerge: critical error"
+                        error_header = "Critical error!"
                         error_text = "scmerge: abnormal program termination!\n" + out_text + "Exit code:" + str(
                             process_error.returncode)
                         error_disp(1, error_header, error_text)
@@ -1017,28 +1062,31 @@ def start_main():
             return
 
 
-def auto_rename(old_filename, dir):
+def auto_rename(old_filename_list, dir):
     n_max = 0
     regex = re.compile(r'\((\d+)\)$')
+    new_filename_list= []
     # Split filename and file suffix for later recomposing
-    filename, file_suffix = os.path.splitext(old_filename)
-    for files in os.listdir(dir):
-        if files.startswith(filename):
-            # Search for the pattern '(n)' at the end of filebase
-            filebase = os.path.splitext(files)[0]
-            pattern = regex.search(filebase)
-            if pattern:
-                # Determine the highest value for 'n' in filebase(n)
-                n = int(pattern.group(1))
-                if n > n_max:
-                    n_max = n
-    if n_max == 0:
-        # Add '(1)' to the filename, and add the suffix
-        new_filename = filename + '(1)' + file_suffix
-    else:
-        n_max += 1
-        new_filename = filename + '(' + str(n_max) + ')' + file_suffix
-    return new_filename
+    for i in old_filename_list:
+        filename, file_suffix = os.path.splitext(old_filename_list[i])
+        for files in os.listdir(dir):
+            if files.startswith(filename):
+                # Search for the pattern '(n)' at the end of filebase
+                filebase = os.path.splitext(files)[0]
+                pattern = regex.search(filebase)
+                if pattern:
+                    # Determine the highest value for 'n' in filebase(n)
+                    n = int(pattern.group(1))
+                    if n > n_max:
+                        n_max = n
+        if n_max == 0:
+            # Add '(1)' to the filename, and add the suffix
+            new_filename = filename + '(1)' + file_suffix
+        else:
+            n_max += 1
+            new_filename = filename + '(' + str(n_max) + ')' + file_suffix
+        new_filename_list.extend(new_filename)
+    return new_filename_list
 
 
 def twic_file_select(twic_record, OP_SYS):
@@ -1388,8 +1436,7 @@ def check_preconditions(OP_SYS):
         error_disp(1, error_header, error_text)
         return False
 
-    # Are there any pgn files generated by pgn2scid left within the working
-    # directory?
+    # Are there any pgn files generated by pgn2scid left within the working directory?
     try:
         os.chdir(w_dir)
     except OSError as os_error:
@@ -1398,25 +1445,30 @@ def check_preconditions(OP_SYS):
         message_frame['state'] = 'disabled'
         error_disp(1, "Unexpected error", "An unexpected error occured while\n "
                                           "trying to check preconditions\n"
-                                          "bevore running pgn2scid!\n "
+                                          "before running pgn2scid!\n "
                                           "pgn2scid has been STOPPED!\n\n" + str(os_error))
         start_action_button['state'] = 'normal'
         return
-    if glob.glob("p2s*.pgn"):
+    if glob.glob('p2s*.pgn'):
         error_header = "Already merged pgn files found!"
         error_text = ("There is at least one older and already merged pgn file in your working directory."
-                    " In order to keep the working directory clean this or these file(s) should be moved to the folder "
-                    "'pgn_files', located in the applications root directory. Otherwise pgn2scid may process them again and you "
-                    "may end up with doubled or unwanted games in your database.\n\n"
-                    "Move old p2s*.pgn files to folder 'pgn_files'?")
+                      "\nMove old p2s*.pgn files to folder 'pgn_files'?\nSelecting 'No' means that pgn2scid is going"
+                      " to process this / these file(s).")
         error_disp(3, error_header, error_text)
+
+    # Are there any Scid files generated by pgn2scid left within the working directory?
+    os.chdir(w_dir)
+    if glob.glob('p2s*.sg4') or glob.glob('p2s*.si4') or glob.glob('p2s*.sn4'):
+        error_header = "Already converted Scid files found!"
+        error_text = ("There is at least one older and already converted Scid database file in your working directory."
+                      "\n\nMove old Scid files to folder 'scid_files'?\nSelecting 'No' means that pgn2scid is going"
+                      " to process these files.")
+        error_disp(5, error_header, error_text)
 
     # Does the (path to the) given Scid database file exist?
     if do_scmerge.get() and not os.path.isfile(file_select_db.get()):
         error_header = "No database selected"
-        error_text = "No valid Scid database selected. " \
-                     "Please specify a valid path " \
-                     "and file."
+        error_text = "No valid Scid database selected.\nPlease specify a valid path\nand file."
         error_disp(1, error_header, error_text)
         return False
 
@@ -1588,9 +1640,9 @@ message_frame.tag_configure("center", justify="center")
 message_frame.grid(column=0, row=0, columnspan=4, padx=5, pady=5)
 message_frame["state"] = "normal"
 
-message_frame.insert(END, "pgn2scid v1.2\n", "center")
-message_frame.insert(END, "Copyright (c) 2017, 2018 by Andreas Kreisig\n", "center")
-message_frame.insert(END, "Released under the terms of the MIT license \n", "center")
+message_frame.insert(END, "pgn2scid v1.3\n", "center")
+message_frame.insert(END, "Copyright (c) 2017 - 2019 by Andreas Kreisig\n", "center")
+message_frame.insert(END, "Released under the terms of the MIT License \n", "center")
 message_frame.insert(END, "This program comes with absolutely NO WARRANTY!\n", "center")
 message_frame.insert(END, "pgnscid, scmerge copyright (c) by Shane Hudson\n", "center")
 message_frame["state"] = "disabled"
