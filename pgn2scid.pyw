@@ -126,6 +126,7 @@ def error_disp(err_level, err_head, err_msg, *args):
 
 def start_main():
     global twic_max
+    twic_max = 0
     action_flag = False
     OP_SYS = platform.system()
 
@@ -678,6 +679,8 @@ def start_main():
                         break
                     pgnscid_output = pgnscid_output.decode("utf-8")
 
+                    print(pgnscid_output)
+
                     # Check for an *.err file within the working directory in case
                     # of any errors or warnings
                     return_val, log_text = check_for_errors(w_dir, root_dir)
@@ -735,7 +738,7 @@ def start_main():
                             start_action_button['state'] = 'normal'
                             return
 
-                    if return_val == (0 or 1):
+                    if return_val == 0 or return_val == 1:
                         games_x = games_stat.search(pgnscid_output)
                         games_stat = int(games_x.group(1))
                         games_count += games_stat
