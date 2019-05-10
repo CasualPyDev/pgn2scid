@@ -126,7 +126,6 @@ def error_disp(err_level, err_head, err_msg, *args):
 
 def start_main():
     global twic_max
-    twic_max = 0
     action_flag = False
     OP_SYS = platform.system()
 
