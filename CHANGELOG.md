@@ -37,7 +37,7 @@ cause some trouble in the unzip routine on non MAC machines
 - File pgn2scid_manual.pdf updated to rev 1.1.b
 - File pgn2scid_win_executable.zip updated to v1.1
 
-## [1.0] - 2017-08-04
+## 1.0 - 2017-08-04
 - Initial release
 
 ### Added
