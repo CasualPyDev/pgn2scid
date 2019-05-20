@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - File pgn2scid_win_amd64_executable.zip updated to v1.3
 - Windows executable build with Python optimizations
 - Windows executable build with UPX - a high-performance executable packer to reduce file size
+- IMPORTANT: the Windows executable is no longer a part of the source code repository. Instead, when you are on the project website here on GitHub, please click on 'releases' to download the executable.
 
 ## [1.2](https://github.com/CasualPyDev/pgn2scid/releases/tag/v1.2) - 2018-12-16
 ### Fixed
