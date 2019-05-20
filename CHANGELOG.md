@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 'No ZIP files found to decompress' message in the message window
 
 ### Changed
-- File pgn2scid_manual.pdf updated to rev 1.3.a
+- File pgn2scid_manual.pdf updated to rev 1.3.b
 - File pgn2scid_win_amd64_executable.zip updated to v1.3
 - Windows executable build with Python optimizations
 - Windows executable build with UPX - a high-performance executable packer to reduce file size
