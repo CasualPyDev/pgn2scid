@@ -24,7 +24,7 @@ cause some trouble in the unzip routine on non MAC machines
 - File pgn2scid_manual.pdf updated to rev 1.2.a
 - File pgn2scid_win_executable.zip updated to v1.2
 
-## [1.1](https://github.com/CasualPyDev/pgn2scid/releases/tag/v1.1) - 2017-08-23
+## 1.1 - 2017-08-23
 ### Added
 - All network errors now cause an entry in the master logfile (pgn2scid_error.log)
 
