@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - File pgn2scid_manual.pdf updated to rev 1.3.b
-- File pgn2scid_win_amd64_executable.zip updated to v1.3
+- File pgn2scid_win_amd64_executable.zip updated to v1.3.1
 - Windows executable build with Python optimizations
 - Windows executable build with UPX - a high-performance executable packer to reduce file size
 - IMPORTANT: the Windows executable is no longer available in the source code repository. Instead, when you are on the project website here on GitHub, please click on 'releases' to download the executable.
