@@ -31,7 +31,7 @@ But there's more! In detail pgn2scid can:
 
 pgn2scid requires Python 3.4 or newer. For Windows users there's a pre-built executable available so that there's no need to download and install Python first (64-bit only). Just download and unzip the file 'pgn2scid_win_amd64_executable.zip'. It contains everything you need to run pgn2scid as well as the manual.
 
-> IMPORTANT: the Windows executable is no longer available in the source code repository. Instead, when you are on the project website here on GitHub, please click on 'releases' to download the executable.
+**IMPORTANT: the Windows executable is no longer available in the source code repository. Instead, when you are on the project website here on GitHub, please click on 'releases' to download the executable.**
 
 ### pgn2scid in a Docker container
 For Mac users there's now a very convenient way to use pgn2scid. Thanks to Kayvan Sylvan there's a Docker container available which enables you to use pgn2scid without installing Python or any other dependencies, under the condition that your system meets the requirements to run Docker containers. pgn2scid in a container can also be used with Linux. If you are unfamiliar with the concepts of Docker you can get some information on https://www.docker.com/what-docker
