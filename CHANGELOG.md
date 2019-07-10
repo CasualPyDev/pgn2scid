@@ -1,13 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.4](https://github.com/CasualPyDev/pgn2scid/releases/tag/v1.4) - 2019-07-10
+## [1.4](https://github.com/CasualPyDev/pgn2scid/releases/tag/1.4) - 2019-07-10
 
 ### Added
 - When there's a new version available pgn2scid now opens up a notifaction window on start up
 
 ### Changed
-- Some internal changes
+- Some internal changes to enable secure https data transfer
 - File pgn2scid_manual.pdf updated to rev 1.4.a
 - File pgn2scid_win_amd64_executable.zip updated to v1.4
 
