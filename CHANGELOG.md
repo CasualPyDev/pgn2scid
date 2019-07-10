@@ -1,18 +1,26 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.3](https://github.com/CasualPyDev/pgn2scid/releases/tag/v1.3) - 2019-05-05
+## [1.4](https://github.com/CasualPyDev/pgn2scid/releases/tag/v1.4) - 2019-07-10
+
+### Added
+- When there's a new version available pgn2scid now opens up a notifaction window on start up
+
+### Changed
+- Some internal changes
+- File pgn2scid_manual.pdf updated to rev 1.4.a
+- File pgn2scid_win_amd64_executable.zip updated to v1.4
+
+## 1.3 - 2019-05-05
 ### Fixed
 - Fixed a bug which, under certain circumstances, caused an unecessary
 'No ZIP files found to decompress' message in the message window
 
 ### Changed
-- File pgn2scid_manual.pdf updated to rev 1.3.b
-- File pgn2scid_win_amd64_executable.zip updated to v1.3.1
-- Windows executable build with Python optimizations
-- Windows executable build with UPX - a high-performance executable packer to reduce file size
+- File pgn2scid_manual.pdf updated to rev 1.3.a
+- File pgn2scid_win_amd64_executable.zip updated to v1.3
 
-## [1.2](https://github.com/CasualPyDev/pgn2scid/releases/tag/v1.2) - 2018-12-16
+## 1.2 - 2018-12-16
 ### Fixed
 - Fixed a problem with nested ZIP files
 - pgn2sicd now ignores hidden MAC OSX folders (__MACOSX) in ZIP files because they can
