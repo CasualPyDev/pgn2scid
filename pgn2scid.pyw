@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # pgn2scid
-# Version: 1.3
+# Version: 1.4
 # Contact: andreaskreisig@gmail.com
 # License: MIT
 
@@ -52,6 +52,10 @@ import zipfile
 import fileinput
 import datetime
 import time
+
+
+VERSION = 1.3
+upd_check = 0
 
 
 # Displays an Error message box. Error level 1 means critical error, 2 means
@@ -185,7 +189,7 @@ def start_main():
             error_flag = False
             write_message("\n\n### Downloading files from TWIC server ###", "black")
             write_message("\nRequesting and parsing information ... ", "black")
-            req = urllib.request.Request('http://theweekinchess.com/twic')
+            req = urllib.request.Request('https://www.theweekinchess.com/twic')
 
             try:
                 with urllib.request.urlopen(req, timeout=15) as url:
@@ -223,12 +227,12 @@ def start_main():
                 # TWIC issue (n)                    /<td>(\d+)</td>/
                 # TWIC date (dd/mm/yyyy)            /<td>(\d{2}/\d{2}/\d{4})</td>/
                 # TWIC info (URL)                   /(http:\/\/www\.\w+\.com\/html\/twic\d+\.html).+read/
-                # TWIC target (URL)(filename)       /(http:\/\/www\.\w+\.com.+)(twic\d+g\.zip)/
+                # TWIC target (URL)(filename)       /(https:\/\/www\.\w+\.com.+)(twic\d+g\.zip)/
 
                 twic_issue = re.compile(r'<td>(\d+)</td>')
                 twic_date = re.compile(r'<td>(\d{2}/\d{2}/\d{4})</td>')
-                twic_info = re.compile(r'(http:\/\/www\.\w+\.com\/html\/twic\d+\.html).+read', re.IGNORECASE)
-                twic_target = re.compile(r'(http:\/\/www\.\w+\.com.+)(twic\d+g\.zip)', re.IGNORECASE)
+                twic_info = re.compile(r'(https:\/\/www\.\w+\.com\/html\/twic\d+\.html).+read', re.IGNORECASE)
+                twic_target = re.compile(r'(https:\/\/www\.\w+\.com\/zips.+)(twic\d+g\.zip)', re.IGNORECASE)
 
                 twic_issue_list = twic_issue.findall(html_content)
                 twic_date_list = twic_date.findall(html_content)
@@ -1246,7 +1250,7 @@ def twic_file_select(twic_record, OP_SYS):
     note.tag_config('bold', font=('arial', 10, 'italic', 'bold'))
     note.tag_config('hyperlink', foreground='blue', underline=1, )
     note.tag_bind('hyperlink', '<Enter>', show_hand_cursor)
-    note.tag_bind('hypelrink', '<Leave>', show_arrow_cursor)
+    note.tag_bind('hyperlink', '<Leave>', show_arrow_cursor)
     note.tag_bind('hyperlink', '<Button-1>', click)
     note['state'] = 'normal'
     note.insert(END, "Please note: ", 'bold')
@@ -1632,6 +1636,8 @@ main_frame.update_idletasks()
 x = main_frame.winfo_screenwidth() // 2 - 300
 y = main_frame.winfo_screenheight() // 2 - 280
 main_frame.geometry("+%d+%d" % (x, y))
+if platform.system() == 'Windows':
+    main_frame.config(bd=5)
 main_frame.resizable(0, 0)
 main_frame.deiconify()
 
@@ -1642,7 +1648,7 @@ message_frame.tag_configure("center", justify="center")
 message_frame.grid(column=0, row=0, columnspan=4, padx=5, pady=5)
 message_frame["state"] = "normal"
 
-message_frame.insert(END, "pgn2scid v1.3\n", "center")
+message_frame.insert(END, "pgn2scid 1.4\n", "center")
 message_frame.insert(END, "Copyright (c) 2017 - 2019 by Andreas Kreisig\n", "center")
 message_frame.insert(END, "Released under the terms of the MIT License \n", "center")
 message_frame.insert(END, "This program comes with absolutely NO WARRANTY!\n", "center")
@@ -1665,7 +1671,6 @@ path_select_button = Button(main_frame, image=open_folder_icon, width=40, height
 path_select_button.grid(column=3, row=2, pady=(5, 0))
 
 # Enable TWIC auto downloader
-
 twic_dl = IntVar()
 twic_dl_checkbutton = Checkbutton(main_frame, text=" Enable the TWIC auto downloader", variable=twic_dl,
                                   font=("arial", 10))
@@ -1820,5 +1825,85 @@ if os.path.isfile(init_file):
         error_disp(1, 'Unexpected Error', 'Unexpected error while\n trying to read pgn2scid.ini!')
 else:
     twic_max = 0
+
+# Check for a new version once per start
+if upd_check == 0:
+    upd_check = 1
+
+    version_info = urllib.request.Request('https://raw.githubusercontent.com/CasualPyDev/pgn2scid/master/version')
+    try:
+        with urllib.request.urlopen(version_info) as url:
+            v = url.read().decode('utf-8')
+    except:
+        v = 0
+
+    if v and VERSION < float(v):
+
+        def upd_info(event):
+            w = event.widget
+            x, y = event.x, event.y
+            tags = w.tag_names("@%d, %d" % (x, y))
+            try:
+                webbrowser.open_new('https://github.com/CasualPyDev/pgn2scid/blob/master/CHANGELOG.md')
+            except webbrowser.Error:
+                error_disp(2, "Webbrowser error",
+                           "An error occured while trying to open the default\nwebbrowser. Please"
+                           "ensure that a default webbrowser is configured in your system settings.")
+            return
+
+        def upd_download(event):
+            w = event.widget
+            x, y = event.x, event.y
+            tags = w.tag_names("@%d, %d" % (x, y))
+            try:
+                webbrowser.open_new('https://github.com/CasualPyDev/pgn2scid/releases')
+            except webbrowser.Error:
+                error_disp(2, "Webbrowser error",
+                           "An error occured while trying to open the default\nwebbrowser. Please"
+                           "ensure that a default webbrowser is configured in your system settings.")
+            return
+
+
+        def upd_show_hand_cursor(event):
+            event.widget.configure(cursor="hand1")
+
+
+        def upd_show_arrow_cursor(event):
+            event.widget.configure(cursor="")
+
+        x = main_frame.winfo_rootx()
+        y = main_frame.winfo_rooty()
+        root_width = main_frame.winfo_width()
+        root_height = main_frame.winfo_height()
+        x_pos = x + (root_width // 2) + 110
+        y_pos = y + (root_height // 2) + 50
+        upd_window = Toplevel(main_frame)
+        upd_window.geometry("+%d+%d" % (x_pos, y_pos))
+        upd_window.resizable(0, 0)
+        # upd_textbox = Toplevel(main_frame)
+        upd_window.wm_title("Info")
+        upd_textbox = Text(upd_window, background='white', wrap=WORD, width=20, height=8, font=('arial', 10))
+        upd_textbox.tag_configure('left', justify='left')
+        upd_textbox.tag_configure('header', font=('arial bold', 10))
+        upd_textbox.tag_configure('infolink', justify='center')
+        upd_textbox.tag_config('infolink', foreground='blue', underline=1, )
+        upd_textbox.tag_bind('infolink', '<Enter>', upd_show_hand_cursor)
+        upd_textbox.tag_bind('infolink', '<Leave>', upd_show_arrow_cursor)
+        upd_textbox.tag_bind('infolink', '<Button-1>', upd_info)
+        upd_textbox.tag_configure('downloadlink', justify='center')
+        upd_textbox.tag_config('downloadlink', foreground='blue', underline=1, )
+        upd_textbox.tag_bind('downloadlink', '<Enter>', upd_show_hand_cursor)
+        upd_textbox.tag_bind('downloadlink', '<Leave>', upd_show_arrow_cursor)
+        upd_textbox.tag_bind('downloadlink', '<Button-1>', upd_download)
+        upd_textbox['state'] = 'normal'
+        upd_textbox.insert(END, "New version available!\n\n", 'header')
+        upd_textbox.insert(END, "Your version: " + str(VERSION) + "\n", 'left')
+        upd_textbox.insert(END, "New version: " + v + "\n", 'left')
+        upd_textbox.insert(END, ">>Info<<\n", 'infolink')
+        upd_textbox.insert(END, ">>Download<<", 'downloadlink')
+        upd_textbox['state'] = 'disabled'
+        upd_textbox.grid(column=0, row=0, padx=5, pady=5)
+        ok_button = Button(upd_window, text="OK", command=upd_window.destroy)
+        ok_button.grid(column=0, row=1)
 
 main_frame.mainloop()
