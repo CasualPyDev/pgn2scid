@@ -54,7 +54,7 @@ import datetime
 import time
 
 
-VERSION = 1.3
+VERSION = 1.4
 upd_check = 0
 
 
