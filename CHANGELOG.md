@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [1.4](https://github.com/CasualPyDev/pgn2scid/releases/tag/1.4) - 2019-07-10
 
 ### Added
-- When there's a new version available pgn2scid now opens up a notifaction window on start up
+- When there's a new version available pgn2scid now opens a notifaction window on start up
 
 ### Changed
 - Some internal changes to enable secure https data transfer
