@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Some internal changes to enable secure https data transfer
-- File pgn2scid_manual.pdf updated to rev 1.4.c
+- File pgn2scid_manual.pdf updated to rev 1.4.d
 - File pgn2scid_win_amd64_executable.zip updated to v1.4
 
 ## 1.3 - 2019-05-05
