@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.5](https://github.com/CasualPyDev/pgn2scid/releases/tag/1.5) - 2019-09-07
+
+### Fixed
+- Fixed a bug which creates a folder 'zip_files' although there's nothing to copy into it.
+
+### Changed
+- File pgn2scid_manual.pdf updated to rev 1.5.a
+- File pgn2scid_win_amd64_executable.zip updated to v1.5
+
 ## [1.4](https://github.com/CasualPyDev/pgn2scid/releases/tag/1.4) - 2019-07-10
 
 ### Added

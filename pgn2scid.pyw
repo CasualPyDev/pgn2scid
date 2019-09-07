@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # pgn2scid
-# Version: 1.4
+# Version: 1.5
 # Contact: andreaskreisig@gmail.com
 # License: MIT
 
@@ -54,7 +54,7 @@ import datetime
 import time
 
 
-VERSION = 1.4
+VERSION = 1.5
 upd_check = 0
 
 
@@ -487,7 +487,7 @@ def start_main():
             else:
                 move_index = 0
                 file_index = 0
-                if not os.path.isdir(os.path.join(root_dir, 'zip_files')):
+                if zip_flag and not os.path.isdir(os.path.join(root_dir, 'zip_files')):
                     write_message("\nCreating folder 'zip_files' ...", 'black')
                     try:
                         os.makedirs(os.path.join(root_dir, 'zip_files'))
@@ -1648,7 +1648,7 @@ message_frame.tag_configure("center", justify="center")
 message_frame.grid(column=0, row=0, columnspan=4, padx=5, pady=5)
 message_frame["state"] = "normal"
 
-message_frame.insert(END, "pgn2scid 1.4\n", "center")
+message_frame.insert(END, "pgn2scid 1.5\n", "center")
 message_frame.insert(END, "Copyright (c) 2017 - 2019 by Andreas Kreisig\n", "center")
 message_frame.insert(END, "Released under the terms of the MIT License \n", "center")
 message_frame.insert(END, "This program comes with absolutely NO WARRANTY!\n", "center")
@@ -1835,7 +1835,7 @@ if upd_check == 0:
         with urllib.request.urlopen(version_info) as url:
             v = url.read().decode('utf-8')
     except:
-        v = 0
+        v = False
 
     if v and VERSION < float(v):
 
