@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
 - File pgn2scid_manual.pdf updated to rev 1.5.a
 - File pgn2scid_win_amd64_executable.zip updated to v1.5
 
-## [1.4](https://github.com/CasualPyDev/pgn2scid/releases/tag/1.4) - 2019-07-10
+## [1.4] - 2019-07-10
 
 ### Added
 - When there's a new version available pgn2scid now opens a notifaction window on start up
