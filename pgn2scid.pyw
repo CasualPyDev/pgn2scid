@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # pgn2scid
-# Version: 1.5
+# Version: 1.6
 # Contact: andreaskreisig@gmail.com
 # License: MIT
 
@@ -53,8 +53,7 @@ import fileinput
 import datetime
 import time
 
-
-VERSION = 1.5
+VERSION = 1.6
 upd_check = 0
 
 
@@ -97,7 +96,7 @@ def error_disp(err_level, err_head, err_msg, *args):
             create_copy = False
         return create_copy
     elif err_level == 5:
-        auto_rename_list= []  # Add Scid files with the same basename to pass this list to func auto_rename
+        auto_rename_list = []  # Add Scid files with the same basename to pass this list to func auto_rename
         scid_list = []  # Add all existing files in 'scid_files' to this list
         w_dir = path_select_frame.get()
         os.chdir(root_dir)
@@ -257,7 +256,8 @@ def start_main():
                 if twic_record:
                     file_list = twic_file_select(twic_record, OP_SYS)
                     while file_list == 'empty':
-                        error_disp(2, "No files selected", "You have to select at least one file!", twic_file_select_window)
+                        error_disp(2, "No files selected", "You have to select at least one file!",
+                                   twic_file_select_window)
                         twic_file_select_window.destroy()
                         file_list = twic_file_select(twic_record, OP_SYS)
                 else:
@@ -301,8 +301,9 @@ def start_main():
                                         + str(http_error.code) + " - " + str(http_error.reason))
                             write_logfile(log_text)
                             error_header = "Network error"
-                            error_text = ("An error occurred while trying to download files from TWIC server! The server"
-                                          " responded: " + str(http_error.code) + " - " + str(http_error.reason))
+                            error_text = (
+                                        "An error occurred while trying to download files from TWIC server! The server"
+                                        " responded: " + str(http_error.code) + " - " + str(http_error.reason))
                             error_disp(1, error_header, error_text)
                             break
                         except urllib.error.URLError as url_error:
@@ -311,13 +312,14 @@ def start_main():
                                         + str(url_error.reason))
                             write_logfile(log_text)
                             error_header = "Network error"
-                            error_text = "An error occurred while trying to download files from TWIC server! Error message: "\
+                            error_text = "An error occurred while trying to download files from TWIC server! Error message: " \
                                          + str(url_error.reason)
                             error_disp(1, error_header, error_text)
                             break
                         except timeout:
                             write_result("FAILED", 'red')
-                            log_text = ("NETWORK ERROR - Downloading file '" + filename + "' from TWIC server: connection timed out")
+                            log_text = (
+                                        "NETWORK ERROR - Downloading file '" + filename + "' from TWIC server: connection timed out")
                             write_logfile(log_text)
                             error_header = "Network error"
                             error_text = "A Timeout error occured while trying to dowload files from TWIC server. Please try again later."
@@ -359,18 +361,20 @@ def start_main():
                                     if not filename or sub_dir == '__MACOSX':
                                         continue
                                     if member[-3:] == 'pgn' or member[-3:] == 'zip':
-                                        write_message("\nExtracting '" + member + "' from archive '" + zip_filename + "' ... ",
-                                                      "black")
+                                        write_message(
+                                            "\nExtracting '" + member + "' from archive '" + zip_filename + "' ... ",
+                                            "black")
                                         if member in uzip_set and member not in zipfiles_old_set:  # Does the filename already exists?
                                             if not do_not_ask:
                                                 custom_msg_header = "File already exists!"
-                                                custom_msg_text = "Extracting pgn files: the file '" + member + "' already exists!\n" "How to proceed?"
+                                                custom_msg_text = "Extracting pgn files: the file '" + member + "' already exists!\nHow to proceed?"
                                                 button1 = "Skip"
                                                 button2 = "Overwrite"
                                                 button3 = "Auto rename"
                                                 dont_ask_flag = True
                                                 choice, do_not_ask = custom_msg_box(custom_msg_header, custom_msg_text,
-                                                                                    dont_ask_flag, button1, button2, button3)
+                                                                                    dont_ask_flag, button1, button2,
+                                                                                    button3)
 
                                             if choice == 1:
                                                 # Skip / don't unzip the actual zip member
@@ -396,10 +400,10 @@ def start_main():
                                                     except OSError as os_error:
                                                         write_message("\nSTOPPED", 'black')
                                                         error_disp(1, "Unexpected error",
-                                                                    "An unexpected error occured while\n"
-                                                                    "trying to create a temp folder!\n\n"
-                                                                    + str(os_error)
-                                                                    + "\npgn2scid has been STOPPED!")
+                                                                   "An unexpected error occured while\n"
+                                                                   "trying to create a temp folder!\n\n"
+                                                                   + str(os_error)
+                                                                   + "\npgn2scid has been STOPPED!")
                                                         start_action_button['state'] = 'normal'
                                                         return
                                                     tmp_dir = os.path.join(w_dir, 'tmp')
@@ -419,11 +423,11 @@ def start_main():
                                                 except OSError as os_error:
                                                     write_message("\nSTOPPED", 'black')
                                                     error_disp(1, "Unexpected error",
-                                                                "An unexpected error occured while\n"
-                                                                "trying to move uncompressed ZIP files\n"
-                                                                "from tmp_dir to w_dir!\n\n"
-                                                                + str(os_error)
-                                                                + "\npgn2scid has been STOPPED!")
+                                                               "An unexpected error occured while\n"
+                                                               "trying to move uncompressed ZIP files\n"
+                                                               "from tmp_dir to w_dir!\n\n"
+                                                               + str(os_error)
+                                                               + "\npgn2scid has been STOPPED!")
                                                     start_action_button['state'] = 'normal'
                                                     return
 
@@ -446,7 +450,8 @@ def start_main():
                                 uzip_old_set.union(uzip_set)
                         except BadZipFile as bad_zip_file:
                             write_message("\nDecompressing '" + zip_filename + "' ... ", 'black')
-                            error_disp(1, "Unzip Error", "An error occurred while trying to decompress '" + zip_filename + "'!"
+                            error_disp(1, "Unzip Error",
+                                       "An error occurred while trying to decompress '" + zip_filename + "'!"
                                        + "\nError message: " + str(bad_zip_file))
                             write_result("SKIPPED", 'red')
                             continue
@@ -473,10 +478,10 @@ def start_main():
                         write_result("FAILED", 'red')
                         write_message("\nSTOPPED", 'black')
                         error_disp(1, "Unexpected error",
-                                    "An unexpected error occured while\n"
-                                    "trying to delete ZIP files!\n"
-                                    + str(os_error)
-                                    + "\n\npgn2scid has been STOPPED!")
+                                   "An unexpected error occured while\n"
+                                   "trying to delete ZIP files!\n"
+                                   + str(os_error)
+                                   + "\n\npgn2scid has been STOPPED!")
                         start_action_button['state'] = 'normal'
                         return
 
@@ -496,10 +501,10 @@ def start_main():
                         write_result("FAILED", 'red')
                         write_message("\nSTOPPED", 'black')
                         error_disp(1, "Unexpected error",
-                                    "An unexpected error occured while\n"
-                                    "trying to create the folder 'zip_files'!\n"
-                                    + str(os_error)
-                                    + "\n\npgn2scid has been STOPPED!")
+                                   "An unexpected error occured while\n"
+                                   "trying to create the folder 'zip_files'!\n"
+                                   + str(os_error)
+                                   + "\n\npgn2scid has been STOPPED!")
                         start_action_button['state'] = 'normal'
                         return
 
@@ -526,10 +531,10 @@ def start_main():
                                 write_result("FAILED", 'red')
                                 write_message("\nSTOPPED", 'black')
                                 error_disp(1, "Unexpected error",
-                                            "An unexpected error occured while\n"
-                                            "trying to move ZIP files!\n"
-                                            + str(os_error)
-                                            + "\n\npgn2scid has been STOPPED!")
+                                           "An unexpected error occured while\n"
+                                           "trying to move ZIP files!\n"
+                                           + str(os_error)
+                                           + "\n\npgn2scid has been STOPPED!")
                                 start_action_button['state'] = 'normal'
                                 return
 
@@ -560,10 +565,10 @@ def start_main():
                         write_result("FAILED", 'red')
                         write_message("\n\nSTOPPED", 'black')
                         error_disp(1, "Unexpeted error",
-                                    "An uncexpected error ocurred while\n"
-                                    "trying to merge PGN files!\n"
-                                    + str(os_error)
-                                    + "\n\npgn2scid has been STOPPED!")
+                                   "An uncexpected error ocurred while\n"
+                                   "trying to merge PGN files!\n"
+                                   + str(os_error)
+                                   + "\n\npgn2scid has been STOPPED!")
                         start_action_button['state'] = 'normal'
                         return
 
@@ -584,10 +589,10 @@ def start_main():
                             write_result("FAILED", 'red')
                             write_message("\nSTOPPED", 'black')
                             error_disp(1, "Unexpected error",
-                                        "An unexpected error occured while\n"
-                                        "trying to delete PGN files!\n"
-                                        + str(os_error)
-                                        + "\n\npgn2scid has been STOPPED!")
+                                       "An unexpected error occured while\n"
+                                       "trying to delete PGN files!\n"
+                                       + str(os_error)
+                                       + "\n\npgn2scid has been STOPPED!")
                             start_action_button['state'] = 'normal'
                             return
                 write_result("DONE", 'green')
@@ -609,10 +614,10 @@ def start_main():
                             write_result("FAILED", 'red')
                             write_message("\nSTOPPED", 'black')
                             error_disp(1, "Unexpected error",
-                                        "An unexpected error occured while\n"
-                                        "trying to create the folder 'pgn_files'!\n"
-                                        + str(os_error)
-                                        + "\n\npgn2scid has been STOPPED!")
+                                       "An unexpected error occured while\n"
+                                       "trying to create the folder 'pgn_files'!\n"
+                                       + str(os_error)
+                                       + "\n\npgn2scid has been STOPPED!")
                             start_action_button['state'] = 'normal'
                             return
 
@@ -637,10 +642,10 @@ def start_main():
                             except OSError as os_error:
                                 write_message("\nSTOPPED", 'black')
                                 error_disp(1, "Unexpected error",
-                                            "An unexpected error occured while\n"
-                                            "trying to move PGN files!\n"
-                                            + str(os_error)
-                                            + "\n\npgn2scid has been STOPPED!")
+                                           "An unexpected error occured while\n"
+                                           "trying to move PGN files!\n"
+                                           + str(os_error)
+                                           + "\n\npgn2scid has been STOPPED!")
                                 start_action_button['state'] = 'normal'
                                 return
                     if move_index == file_index:
@@ -667,7 +672,8 @@ def start_main():
                     pgn_count += 1
                     write_message("\nConverting " + filename + " ... ", "black")
                     try:
-                        pgnscid_output = subprocess.check_output(["pgnscid", os.path.join(w_dir, filename)], shell=False,
+                        pgnscid_output = subprocess.check_output(["pgnscid", os.path.join(w_dir, filename)],
+                                                                 shell=False,
                                                                  stderr=subprocess.STDOUT)
                         while not pgnscid_output:
                             time.sleep(0.5)
@@ -700,11 +706,11 @@ def start_main():
                             except OSError as os_error:
                                 write_message("\nSTOPPED", 'black')
                                 error_disp(1, "Unexpected error",
-                                            "An unexpected error occured while\n"
-                                            "trying to remove Scid files based\n"
-                                            "on a faulty PGN file!\n"
-                                            + str(os_error)
-                                            + "\n\npgn2scid has been STOPPED!")
+                                           "An unexpected error occured while\n"
+                                           "trying to remove Scid files based\n"
+                                           "on a faulty PGN file!\n"
+                                           + str(os_error)
+                                           + "\n\npgn2scid has been STOPPED!")
                                 start_action_button['state'] = 'normal'
                                 return
                         pgn_count -= 1
@@ -734,10 +740,10 @@ def start_main():
                             write_result("FAILED", 'red')
                             write_message("\n\nSTOPPED", 'black')
                             error_disp(1, "Unexpected error",
-                                        "An unexpected error occured while\n"
-                                        "trying to move the suspended PGN file!\n"
-                                        + str(os_error)
-                                        + "\n\npgn2scid has been STOPPED!")
+                                       "An unexpected error occured while\n"
+                                       "trying to move the suspended PGN file!\n"
+                                       + str(os_error)
+                                       + "\n\npgn2scid has been STOPPED!")
                             start_action_button['state'] = 'normal'
                             return
 
@@ -780,10 +786,10 @@ def start_main():
                         except OSError as os_error:
                             write_message("\nSTOPPED", 'black')
                             error_disp(1, "Unexpected error",
-                                        "An unexpected error occured while\n"
-                                        "trying to delete remaining PGN files!\n"
-                                        + str(os_error)
-                                        + "\n\npgn2scid has been STOPPED!")
+                                       "An unexpected error occured while\n"
+                                       "trying to delete remaining PGN files!\n"
+                                       + str(os_error)
+                                       + "\n\npgn2scid has been STOPPED!")
                             start_action_button['state'] = 'normal'
                             write_result("FAILED", "red")
                             return
@@ -804,10 +810,10 @@ def start_main():
                         write_result("FAILED", 'red')
                         write_message("\nSTOPPED", 'black')
                         error_disp(1, "Unexpected error",
-                                    "An unexpected error occured while\n"
-                                    "trying to create the folder 'pgn_files'!\n"
-                                    + str(os_error)
-                                    + "\n\npgn2scid has been STOPPED!")
+                                   "An unexpected error occured while\n"
+                                   "trying to create the folder 'pgn_files'!\n"
+                                   + str(os_error)
+                                   + "\n\npgn2scid has been STOPPED!")
                         start_action_button['state'] = 'normal'
                         return
 
@@ -833,10 +839,10 @@ def start_main():
                     write_result("FAILED", 'red')
                     write_message("\n\nSTOPPED", 'black')
                     error_disp(1, "Unexpected error",
-                                "An unexpected error occured while\n"
-                                "trying to move remaining PGN files!\n"
-                                + str(os_error)
-                                + "\n\npgn2scid has been STOPPED!")
+                               "An unexpected error occured while\n"
+                               "trying to move remaining PGN files!\n"
+                               + str(os_error)
+                               + "\n\npgn2scid has been STOPPED!")
                     start_action_button['state'] = 'normal'
                     return
                 if move_index == file_index:
@@ -875,11 +881,11 @@ def start_main():
                         write_result("FAILED", 'red')
                         write_message("\n\nSTOPPED", 'black')
                         error_disp(1, "Unexpected error",
-                                    "An unexpected error occured while\n"
-                                    "trying to create a zipped copy!\n"
-                                    "of the existing database!\n"
-                                    + str(os_error)
-                                    + "\n\npgn2scid has been STOPPED!")
+                                   "An unexpected error occured while\n"
+                                   "trying to create a zipped copy!\n"
+                                   "of the existing database!\n"
+                                   + str(os_error)
+                                   + "\n\npgn2scid has been STOPPED!")
                         start_action_button['state'] = 'normal'
                         return
 
@@ -891,10 +897,10 @@ def start_main():
                         except OSError as os_error:
                             write_message("\nSTOPPED", 'black')
                             error_disp(1, "Unexpected error",
-                                        "An unexpected error occured while\n"
-                                        "trying to create the folder 'scid_db_copy"
-                                        + str(os_error)
-                                        + "\n\npgn2scid has been STOPPED!")
+                                       "An unexpected error occured while\n"
+                                       "trying to create the folder 'scid_db_copy"
+                                       + str(os_error)
+                                       + "\n\npgn2scid has been STOPPED!")
                             start_action_button['state'] = 'normal'
                     write_message("\nMoving ZIP compressed database to folder 'scid_db_copy' ... ", 'black')
                     source = os.path.join(w_dir, zipped_db_filename)
@@ -906,12 +912,12 @@ def start_main():
                         write_result("FAILED", 'red')
                         write_message("\n\nSTOPPED", 'black')
                         error_disp(1, "Unexpected Error",
-                                    "Unexpected error while moving ZIP compressed"
-                                    " Scid files. Please make you sure\n"
-                                    " you have read / write access to "
-                                    + destination + "\n"
-                                    + str(os_error)
-                                    + "\n\npgn2scid has been STOPPED")
+                                   "Unexpected error while moving ZIP compressed"
+                                   " Scid files. Please make you sure\n"
+                                   " you have read / write access to "
+                                   + destination + "\n"
+                                   + str(os_error)
+                                   + "\n\npgn2scid has been STOPPED")
                         start_action_button['state'] = 'normal'
                         return
                 else:
@@ -961,10 +967,10 @@ def start_main():
                                 write_result("FAILED", "red")
                                 write_message("\nSTOPPED", 'black')
                                 error_disp(1, "Unexpected error",
-                                            "An unexpected error occured while\n"
-                                            "trying to delete remaining Scid files!\n"
-                                            + str(os_error)
-                                            + "\n\npgn2scid has been STOPPED!")
+                                           "An unexpected error occured while\n"
+                                           "trying to delete remaining Scid files!\n"
+                                           + str(os_error)
+                                           + "\n\npgn2scid has been STOPPED!")
                                 start_action_button['state'] = 'normal'
                                 return
                 write_result("DONE", 'green')
@@ -985,10 +991,10 @@ def start_main():
                         except OSError as os_error:
                             write_message("\n\nSTOPPED", 'black')
                             error_disp(1, "Unexpected error",
-                                        "An unexpected error occured while\n"
-                                        "trying to move remaining Scid files!\n"
-                                        + str(os_error)
-                                        + "\n\npgn2scid has been STOPPED!")
+                                       "An unexpected error occured while\n"
+                                       "trying to move remaining Scid files!\n"
+                                       + str(os_error)
+                                       + "\n\npgn2scid has been STOPPED!")
                             start_action_button['state'] = 'normal'
                             write_result("FAILED", "red")
                             return
@@ -1014,11 +1020,11 @@ def start_main():
                                 except OSError as os_error:
                                     write_result("FAILED", 'red')
                                     write_message("\n\nSTOPPED", 'black')
-                                    error_disp(1, "Unexpeced error",
-                                                "An unexpected error occured while\n"
-                                                "trying to move remaining Scid files!"
-                                                + str(os_error)
-                                                + "\n\npgn2scid has been STOPPED!")
+                                    error_disp(1, "Unexpected error",
+                                               "An unexpected error occurred while\n"
+                                               "trying to move remaining Scid files!"
+                                               + str(os_error)
+                                               + "\n\npgn2scid has been STOPPED!")
                                     start_action_button['state'] = 'normal'
                                     return
                     if move_index == file_index:
@@ -1060,8 +1066,8 @@ def start_main():
                     config.write(configfile)
             except IOError:
                 error_disp(1, "Error while writing config file",
-                            "Unexpected I/O Error while trying"
-                            " to write a pgn2scid.ini config file.")
+                           "Unexpected I/O Error while trying"
+                           " to write a pgn2scid.ini config file.")
         else:
             write_message("\n\nNothing to do", "black")
             start_action_button["state"] = "normal"
@@ -1071,7 +1077,7 @@ def start_main():
 def auto_rename(old_filename_list, dir):
     n_max = 0
     regex = re.compile(r'\((\d+)\)$')
-    new_filename_list= []
+    new_filename_list = []
     # Split filename and file suffix for later recomposing
     for i in old_filename_list:
         filename, file_suffix = os.path.splitext(old_filename_list[i])
@@ -1255,8 +1261,8 @@ def twic_file_select(twic_record, OP_SYS):
     note['state'] = 'normal'
     note.insert(END, "Please note: ", 'bold')
     note.insert(END, "TWIC downloads is a service provided by 'The Week in Chess', founded by Mark Crowther. It's "
-                     "completely free of charge for personal use. If you download files regularly you should consider to "
-                     "donate in order to keep this service living. For more information please visit ")
+                     "completely free of charge for personal use. If you download files regularly you should "
+                     "consider to donate in order to keep this service living. For more information please visit ")
     note.insert(END, "http://theweekinchess.com", 'hyperlink')
     note['state'] = 'disabled'
     note.grid(column=0, row=1, padx=5, pady=(5, 5))
@@ -1301,10 +1307,10 @@ def check_for_errors(w_dir, root_dir):
             except IOError as io_error:
                 write_message("\n\nSTOPPED", 'black')
                 error_disp(2, "Unexpected error",
-                            "An unexpected error occured while\n"
-                            "trying to read the pgnscid error log file!\n"
-                            + str(io_error),
-                            + "\n\npgn2scid has been STOPPED!")
+                           "An unexpected error occured while\n"
+                           "trying to read the pgnscid error log file!\n"
+                           + str(io_error),
+                           + "\n\npgn2scid has been STOPPED!")
                 start_action_button['state'] = 'normal'
                 return
 
@@ -1532,14 +1538,20 @@ def main_exit():
 
 
 def select_path():
+    old_dir = path_select_frame.get()
     dir_name = filedialog.askdirectory()
+    if dir_name == '':
+        dir_name = old_dir
     path_select_frame.delete(0, END)
     path_select_frame.insert(0, dir_name)
     return None
 
 
 def select_file():
+    old_db = existing_scid_db = file_select_db.get()
     file_name = filedialog.askopenfilename(filetypes=[("Scid database files", "*.si4")])
+    if file_name == '':
+        file_name = old_db
     file_select_db.delete(0, END)
     file_select_db.insert(0, file_name)
     return None
@@ -1648,7 +1660,7 @@ message_frame.tag_configure("center", justify="center")
 message_frame.grid(column=0, row=0, columnspan=4, padx=5, pady=5)
 message_frame["state"] = "normal"
 
-message_frame.insert(END, "pgn2scid 1.5\n", "center")
+message_frame.insert(END, "pgn2scid 1.6\n", "center")
 message_frame.insert(END, "Copyright (c) 2017 - 2019 by Andreas Kreisig\n", "center")
 message_frame.insert(END, "Released under the terms of the MIT License \n", "center")
 message_frame.insert(END, "This program comes with absolutely NO WARRANTY!\n", "center")
@@ -1728,7 +1740,7 @@ do_scmerge_checkbutton.grid(column=0, row=10, columnspan=4, pady=(15, 0), sticky
 # Checkbox to zip compress an existing Scid database
 zip_scid_db = IntVar()
 zip_scid_db_checkbutton = Checkbutton(main_frame, text=" Create a ZIP compressed copy of the existing database before"
-                                                        " merging", font=("arial", 10), variable=zip_scid_db)
+                                                       " merging", font=("arial", 10), variable=zip_scid_db)
 zip_scid_db_checkbutton.grid(column=0, row=11, columnspan=4, padx=20, sticky=W)
 zip_scid_db_checkbutton["state"] = "disabled"
 
@@ -1851,6 +1863,7 @@ if upd_check == 0:
                            "ensure that a default webbrowser is configured in your system settings.")
             return
 
+
         def upd_download(event):
             w = event.widget
             x, y = event.x, event.y
@@ -1870,6 +1883,7 @@ if upd_check == 0:
 
         def upd_show_arrow_cursor(event):
             event.widget.configure(cursor="")
+
 
         x = main_frame.winfo_rootx()
         y = main_frame.winfo_rooty()
