@@ -1,7 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
+## [1.6](https://github.com/CasualPyDev/pgn2scid/releases/tag/1.6) - 2019-10-14
 
-## [1.5](https://github.com/CasualPyDev/pgn2scid/releases/tag/1.5) - 2019-09-07
+### Fixed
+- Fixed an uncritical but slightly annoying bug which causes a blanked out working directory or database
+input field when clicking on "Cancel" in the related dialog box.
+
+### Changed
+- File pgn2scid_manual.pdf updated to rev. 1.6.a
+- File pgn2scid_win_amd64_executable.zip updated to v1.6
+
+## 1.5 - 2019-09-07
 
 ### Fixed
 - Fixed a bug which creates a folder 'zip_files' although there's nothing to copy into it.
@@ -10,10 +19,10 @@ All notable changes to this project will be documented in this file.
 - File pgn2scid_manual.pdf updated to rev 1.5.a
 - File pgn2scid_win_amd64_executable.zip updated to v1.5
 
-## [1.4](https://github.com/CasualPyDev/pgn2scid/releases/tag/1.4) - 2019-07-10
+## 1.4 - 2019-07-10
 
 ### Added
-- When there's a new version available pgn2scid now opens a notifaction window on start up
+- When there's a new version available pgn2scid now opens a notification window on start up
 
 ### Changed
 - Some internal changes to enable secure https data transfer
