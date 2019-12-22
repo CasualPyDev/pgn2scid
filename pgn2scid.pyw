@@ -1540,20 +1540,24 @@ def main_exit():
 def select_path():
     old_dir = path_select_frame.get()
     dir_name = filedialog.askdirectory()
-    if dir_name == '':
-        dir_name = old_dir
-    path_select_frame.delete(0, END)
-    path_select_frame.insert(0, dir_name)
+    if dir_name == () or dir_name == '':
+        path_select_frame.delete(0, END)
+        path_select_frame.insert(0, old_dir)
+    else:
+        path_select_frame.delete(0, END)
+        path_select_frame.insert(0, dir_name)
     return None
 
 
 def select_file():
-    old_db = existing_scid_db = file_select_db.get()
+    old_db = file_select_db.get()
     file_name = filedialog.askopenfilename(filetypes=[("Scid database files", "*.si4")])
-    if file_name == '':
-        file_name = old_db
-    file_select_db.delete(0, END)
-    file_select_db.insert(0, file_name)
+    if file_name == () or file_name == '':
+        file_select_db.delete(0, END)
+        file_select_db.insert(0, old_db)
+    else:
+        file_select_db.delete(0, END)
+        file_select_db.insert(0, file_name)
     return None
 
 
