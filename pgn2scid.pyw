@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # pgn2scid
-# Version: 1.6
+# Version: 1.6.1
 # Contact: andreaskreisig@gmail.com
 # License: MIT
 
@@ -1664,7 +1664,7 @@ message_frame.tag_configure("center", justify="center")
 message_frame.grid(column=0, row=0, columnspan=4, padx=5, pady=5)
 message_frame["state"] = "normal"
 
-message_frame.insert(END, "pgn2scid 1.6\n", "center")
+message_frame.insert(END, "pgn2scid 1.6.1\n", "center")
 message_frame.insert(END, "Copyright (c) 2017 - 2019 by Andreas Kreisig\n", "center")
 message_frame.insert(END, "Released under the terms of the MIT License \n", "center")
 message_frame.insert(END, "This program comes with absolutely NO WARRANTY!\n", "center")
