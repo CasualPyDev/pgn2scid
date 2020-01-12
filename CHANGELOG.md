@@ -8,7 +8,7 @@ input field when clicking on "Cancel" in the related dialog box.
 
 ### Changed
 - File pgn2scid_manual.pdf updated to rev. 1.6.a
-- File pgn2scid_win_amd64_executable.zip updated to v1.6
+- File pgn2scid_win_amd64_executable.zip updated to v1.6.1
 
 ## 1.5 - 2019-09-07
 
