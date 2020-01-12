@@ -1,6 +1,6 @@
 # Changelog
 All notable changes to this project will be documented in this file.
-## [1.6](https://github.com/CasualPyDev/pgn2scid/releases/tag/1.6) - 2019-12-18
+## [1.6.1](https://github.com/CasualPyDev/pgn2scid/releases/tag/1.6) - 2020-01-12
 
 ### Fixed
 - Fixed an uncritical but slightly annoying bug which causes a blanked out working directory or database
