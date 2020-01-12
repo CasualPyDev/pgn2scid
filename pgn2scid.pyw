@@ -53,7 +53,7 @@ import fileinput
 import datetime
 import time
 
-VERSION = 1.6
+VERSION = '1.6.1'
 upd_check = 0
 
 
@@ -1664,7 +1664,7 @@ message_frame.tag_configure("center", justify="center")
 message_frame.grid(column=0, row=0, columnspan=4, padx=5, pady=5)
 message_frame["state"] = "normal"
 
-message_frame.insert(END, "pgn2scid 1.6.1\n", "center")
+message_frame.insert(END, "pgn2scid " + VERSION + "\n",  "center")
 message_frame.insert(END, "Copyright (c) 2017 - 2019 by Andreas Kreisig\n", "center")
 message_frame.insert(END, "Released under the terms of the MIT License \n", "center")
 message_frame.insert(END, "This program comes with absolutely NO WARRANTY!\n", "center")
@@ -1849,11 +1849,11 @@ if upd_check == 0:
     version_info = urllib.request.Request('https://raw.githubusercontent.com/CasualPyDev/pgn2scid/master/version')
     try:
         with urllib.request.urlopen(version_info) as url:
-            v = url.read().decode('utf-8')
+            v = url.read().decode('utf-8').rstrip()
     except:
         v = False
 
-    if v and VERSION < float(v):
+    if v and (VERSION < v):
 
         def upd_info(event):
             w = event.widget
