@@ -5,6 +5,8 @@ A convenient  GUI wrapper for scmerge and pgnscid with some extra functionality
 
 pgn2scid basically is a convenient GUI wrapper (a graphical user interface for command line tools) for pgnscid and scmerge, two programs to convert PGN files to native Scid database files and to merge a number of Scid files with an existing Scid database. Both tools should be part of a standard 'Scid vs. PC' installation.
 
+**IMPORTANT: The latest 1.6.1 release of pgn2scid uses a different version checker which might cause older releases to crash! PLEASE UPDATE YOUR VERSION by downloading the latest release!**
+
 But there's more! In detail pgn2scid can:
 
 * run on multiple platforms
@@ -30,8 +32,6 @@ But there's more! In detail pgn2scid can:
 * store all settings in an initialisation file so pgn2scid is already preconfigured next time it is started.
 
 pgn2scid requires Python 3.4 or newer. For Windows users there's a pre-built executable available so that there's no need to download and install Python first (64-bit only). Just download and unzip the file 'pgn2scid_win_amd64_executable.zip'. It contains everything you need to run pgn2scid as well as the manual.
-
-**IMPORTANT: The latest 1.6.1 release of pgn2scid uses a different version checker which might cause older releases to crash! PLEASE UPDATE YOUR VERSION by downloading the latest release!**
 
 ### pgn2scid in a Docker container
 For Mac users there's now a very convenient way to use pgn2scid. Thanks to Kayvan Sylvan there's a Docker container available which enables you to use pgn2scid without installing Python or any other dependencies, under the condition that your system meets the requirements to run Docker containers. pgn2scid in a container can also be used with Linux. If you are unfamiliar with the concepts of Docker you can get some information on https://www.docker.com/what-docker
