@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
 # pgn2scid
-# Version: 1.6.1
+# Version: 1.7
 # Contact: andreaskreisig@gmail.com
 # License: MIT
 
-# Copyright (c) 2017 - 2019 Andreas Kreisig
+# Copyright (c) 2017 - 2020 Andreas Kreisig
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in
@@ -53,7 +53,7 @@ import fileinput
 import datetime
 import time
 
-VERSION = '1.6.1'
+VERSION = '1.7'
 upd_check = 0
 
 
