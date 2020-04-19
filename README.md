@@ -1,7 +1,7 @@
 # pgn2scid
 A convenient  GUI wrapper for scmerge and pgnscid with some extra functionality
 
-**IMPORTANT: As of version 1.7, pgn2scid uses external libraries. To install them you have to use 'pip install -r requirements.txt'.
+**IMPORTANT: As of version 1.7, pgn2scid uses additional external libraries. To install them you have to use 'pip install -r requirements.txt'.
  This is only valid for those who do not use the Windows executables. For more information please refer to the manual.**
 
 ### What is pgn2scid?
