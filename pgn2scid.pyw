@@ -294,10 +294,7 @@ def start_main():
                 # Download files and determine the highest TWIC issue number
                 if file_list != 'nil':
                     twic_digit = re.compile(r'\d+')
-                    # file_list = file_list[::-1]
                     for i in file_list:
-                        print(i)
-                        print(type(i))
                         write_message("\nDownloading file '" + twic_file_list[i] + "' ... ", 'black')
                         try:
                             with urllib.request.urlopen(twic_target_list[i], timeout=15) as in_file, open(os.path.join(w_dir,
