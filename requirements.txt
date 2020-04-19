@@ -1,3 +1,6 @@
+# Library dependencies for pgn2scid. You need to install these with
+# `pip install -r requirements.txt` before you can use the software.
+
 beautifulsoup4==4.9.0
 lxml==4.5.0
 soupsieve==2.0
