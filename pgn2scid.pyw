@@ -37,6 +37,7 @@ from tkinter import PhotoImage
 from tkinter.scrolledtext import *
 from socket import timeout
 from zipfile import BadZipFile
+from bs4 import BeautifulSoup
 import configparser
 import urllib.request
 import urllib.error
@@ -221,22 +222,42 @@ def start_main():
                 error_disp(1, error_header, error_text)
 
             if not error_flag:
-                # A simple regex based HTML parser
-                # Patterns below are for reference. They work, but they might be subject to change.
-                # TWIC issue (n)                    /<td>(\d+)</td>/
-                # TWIC date (dd/mm/yyyy)            /<td>(\d{2}/\d{2}/\d{4})</td>/
-                # TWIC info (URL)                   /(http:\/\/www\.\w+\.com\/html\/twic\d+\.html).+read/
-                # TWIC target (URL)(filename)       /(https:\/\/www\.\w+\.com.+)(twic\d+g\.zip)/
+                # ---> New parser code starts here
+                pre_list = []
+                twic_info_list = []
+                twic_target_list = []
+                twic_file_list = []
 
-                twic_issue = re.compile(r'<td>(\d+)</td>')
-                twic_date = re.compile(r'<td>(\d{2}/\d{2}/\d{4})</td>')
-                twic_info = re.compile(r'(https:\/\/www\.\w+\.com\/html\/twic\d+\.html).+read', re.IGNORECASE)
-                twic_target = re.compile(r'(https:\/\/www\.\w+\.com\/zips.+)(twic\d+g\.zip)', re.IGNORECASE)
+                soup = BeautifulSoup(html_content, 'lxml')
 
+                for td_tag in soup.find_all('td'):
+                    pre_list.append(td_tag.contents[0])
+                pre_list_str = str(pre_list)
+
+                twic_issue = re.compile(r'(\')([0-9]+)(\')')
+                twic_date = re.compile(r'(\d{2}/\d{2}/\d{4})')
+
+                twic_date_list = twic_date.findall(pre_list_str)
+                twic_issue_prelist = twic_issue.findall(pre_list_str)
                 twic_issue_list = twic_issue.findall(html_content)
-                twic_date_list = twic_date.findall(html_content)
-                twic_info_list = twic_info.findall(html_content)
-                twic_target_list = twic_target.findall(html_content)
+
+                table = soup.find('table', 'results-table')
+                links = table.find_all('a')
+
+                for link in links:
+                    if 'read' in link.text.casefold():
+                        twic_info_list.append(link.attrs['href'])
+                    if 'pgn' in link.text.casefold():
+                        twic_target_list.append(link.attrs['href'])
+
+                for html_link in twic_target_list:
+                    target_elem = html_link.split('/')
+                    filename = target_elem[-1]
+                    twic_file_list.append(filename)
+
+                for issue in twic_issue_prelist:
+                    twic_issue_list.append(issue[1])
+                # <--- New parser code ends here
 
                 twic_record = []
                 twic_set = []
@@ -247,6 +268,7 @@ def start_main():
                         twic_set.append(twic_date_list[i])
                         twic_set.append(twic_info_list[i])
                         twic_set.append(twic_target_list[i])
+                        twic_set.append(twic_file_list[i])
                         twic_record.append(twic_set)
                         twic_set = []
                 write_result("DONE", 'green')
@@ -265,32 +287,23 @@ def start_main():
                     write_message("\nNo new TWIC files to download ... ", 'black')
                     write_result("SKIPPED", 'red')
 
-                # Join appropriate list elements from 'twic_record' based on the indices in 'file_list'
-                # to create a list of complete URLs targeting to the desired TWIC pgn files
-                complete_url_list = []
-                twic_number_list = []
-                if file_list != 'dummy' and empty_list is False:
-                    for dl_target in file_list:
-                        dl_link = (twic_record[dl_target][3][0] + twic_record[dl_target][3][1])
-                        twic_number = (twic_record[dl_target][0])
-                        complete_url_list.append(dl_link)
-                        twic_number_list.append(twic_number)
-                elif file_list == 'dummy':
+                if file_list == 'nil':
                     write_message("\nDownloading TWIC files ... ", 'black')
                     write_result("CANCELED", 'red')
 
                 # Download files and determine the highest TWIC issue number
-                if complete_url_list:
-                    complete_url_list.reverse()
+                if file_list != 'nil':
                     twic_digit = re.compile(r'\d+')
-                    for i, url in enumerate(complete_url_list):
-                        _, _, _, _, filename = url.split('/')
-                        write_message("\nDownloading file '" + filename + "' ... ", 'black')
+                    # file_list = file_list[::-1]
+                    for i in file_list:
+                        print(i)
+                        print(type(i))
+                        write_message("\nDownloading file '" + twic_file_list[i] + "' ... ", 'black')
                         try:
-                            with urllib.request.urlopen(url, timeout=15) as in_file, open(os.path.join(w_dir, filename),
-                                                                                          'wb') as out_file:
+                            with urllib.request.urlopen(twic_target_list[i], timeout=15) as in_file, open(os.path.join(w_dir,
+                                                        twic_file_list[i]), 'wb') as out_file:
                                 shutil.copyfileobj(in_file, out_file)
-                            twic_dl_issue = twic_digit.search(filename)
+                            twic_dl_issue = twic_digit.search(twic_file_list[i])
                             twic_dl_x = int(twic_dl_issue.group())
                             if twic_dl_x > int(twic_max):
                                 twic_max = twic_dl_x
@@ -1118,7 +1131,7 @@ def twic_file_select(twic_record, OP_SYS):
 
     def cancel():
         nonlocal file_list
-        file_list = "dummy"
+        file_list = "nil"
         twic_file_select_window.destroy()
 
     x = main_frame.winfo_rootx()
@@ -1182,7 +1195,7 @@ def twic_file_select(twic_record, OP_SYS):
         try:
             webbrowser.open_new(url)
         except webbrowser.Error:
-            error_disp(2, "Webbrowser error", "An error occured while trying to open the default\nwebbrowser. Please"
+            error_disp(2, "Web browser error", "An error occured while trying to open the default\nweb browser. Please"
                                               "ensure that a default webbrowser is configured in your system settings.")
         return
 
@@ -1221,7 +1234,7 @@ def twic_file_select(twic_record, OP_SYS):
         twic_file_select_frame.insert(END, '{}{:{f2}}'.format(" ", twic_record[i][1], f2=f2), tag)
         twic_file_select_frame.insert(END, "link", ("href", tag, i))
         twic_file_select_frame.insert(END, '{:{f3}}'.format(" ", f3=f3), tag)
-        twic_file_select_frame.insert(END, '{}{:13}'.format(" ", twic_record[i][3][1]), tag)
+        twic_file_select_frame.insert(END, '{}{:13}'.format(" ", twic_record[i][4]), tag)
         twic_file_select_frame.insert(END, '{:{f5}}'.format(" ", f5=f5), tag)
 
         twic_pointer.append(i)
