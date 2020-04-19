@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 external libraries as of version 1.7)
 - File pgn2scid_win_amd64_executable.zip updated to v1.7
 
-## [1.6.1](https://github.com/CasualPyDev/pgn2scid/releases/tag/1.6) - 2020-01-12
+## 1.6.1 - 2020-01-12
 
 ### Fixed
 - Fixed an uncritical but slightly annoying bug which causes a blanked out working directory or database
