@@ -1678,7 +1678,7 @@ message_frame.grid(column=0, row=0, columnspan=4, padx=5, pady=5)
 message_frame["state"] = "normal"
 
 message_frame.insert(END, "pgn2scid " + VERSION + "\n",  "center")
-message_frame.insert(END, "Copyright (c) 2017 - 2019 by Andreas Kreisig\n", "center")
+message_frame.insert(END, "Copyright (c) 2017 - 2020 by Andreas Kreisig\n", "center")
 message_frame.insert(END, "Released under the terms of the MIT License \n", "center")
 message_frame.insert(END, "This program comes with absolutely NO WARRANTY!\n", "center")
 message_frame.insert(END, "pgnscid, scmerge copyright (c) by Shane Hudson\n", "center")
