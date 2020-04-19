@@ -1,7 +1,8 @@
 # pgn2scid
 A convenient  GUI wrapper for scmerge and pgnscid with some extra functionality
 
-**IMPORTANT: The latest 1.6.1 release of pgn2scid uses a different version checker which might cause older releases to crash! PLEASE UPDATE YOUR VERSION by downloading the latest release!**
+**IMPORTANT: As of version 1.7, pgn2scid uses external libraries. To install them you have to use 'pip install -r requirements.txt'.
+ This is only valid for those who do not use the Windows executables. For more information please refer to the manual.**
 
 
 ### What is pgn2scid?
