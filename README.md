@@ -4,7 +4,6 @@ A convenient  GUI wrapper for scmerge and pgnscid with some extra functionality
 **IMPORTANT: As of version 1.7, pgn2scid uses external libraries. To install them you have to use 'pip install -r requirements.txt'.
  This is only valid for those who do not use the Windows executables. For more information please refer to the manual.**
 
-
 ### What is pgn2scid?
 
 pgn2scid basically is a convenient GUI wrapper (a graphical user interface for command line tools) for pgnscid and scmerge, two programs to convert PGN files to native Scid database files and to merge a number of Scid files with an existing Scid database. Both tools should be part of a standard 'Scid vs. PC' installation.
