@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 - HTML parser rewritten to make it more robust
 
 ### Changed
-- File pgn2scid_manual.pdf updated to rev. 1.7 (extended installation details added to reflect the fact that pgn2scid uses
+- File pgn2scid_manual.pdf updated to rev. 1.7b (extended installation details added to reflect the fact that pgn2scid uses
 external libraries as of version 1.7)
 - File pgn2scid_win_amd64_executable.zip updated to v1.7
 
