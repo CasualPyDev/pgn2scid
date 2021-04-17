@@ -2,5 +2,5 @@
 # `pip install -r requirements.txt` before you can use the software.
 
 beautifulsoup4==4.9.0
-lxml==4.6.2
+lxml==4.6.3
 soupsieve==2.0
