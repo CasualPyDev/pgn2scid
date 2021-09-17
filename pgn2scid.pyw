@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
 # pgn2scid
-# Version: 1.7
+# Version: 1.8
 # Contact: andreaskreisig@gmail.com
 # License: MIT
 
-# Copyright (c) 2017 - 2020 Andreas Kreisig
+# Copyright (c) 2017 - 2021 Andreas Kreisig
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in
@@ -38,6 +38,7 @@ from tkinter.scrolledtext import *
 from socket import timeout
 from zipfile import BadZipFile
 from bs4 import BeautifulSoup
+import random
 import configparser
 import urllib.request
 import urllib.error
@@ -54,7 +55,7 @@ import fileinput
 import datetime
 import time
 
-VERSION = '1.7'
+VERSION = '1.8'
 upd_check = 0
 
 
@@ -184,12 +185,27 @@ def start_main():
         # If option is set download files from TWIC server                   #
         ######################################################################
         if twic_dl.get():
+            def set_rand_ua():
+                uastrings = [
+                    "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36", \
+                    "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36", \
+                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10) AppleWebKit/600.1.25 (KHTML, like Gecko) Version/8.0 Safari/600.1.25", \
+                    "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0", \
+                    "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36", \
+                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36", \
+                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/600.1.17 (KHTML, like Gecko) Version/7.1 Safari/537.85.10", \
+                    "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko", \
+                    "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0", \
+                    "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.104 Safari/537.36" \
+                    ]
+                return random.choice(uastrings)
             action_flag = True
             os.chdir(w_dir)
             error_flag = False
+            headers = {'User-Agent': set_rand_ua()}
             write_message("\n\n### Downloading files from TWIC server ###", "black")
             write_message("\nRequesting and parsing information ... ", "black")
-            req = urllib.request.Request('https://www.theweekinchess.com/twic')
+            req = urllib.request.Request('https://www.theweekinchess.com/twic', headers=headers)
 
             try:
                 with urllib.request.urlopen(req, timeout=15) as url:
@@ -297,7 +313,9 @@ def start_main():
                     for i in file_list:
                         write_message("\nDownloading file '" + twic_file_list[i] + "' ... ", 'black')
                         try:
-                            with urllib.request.urlopen(twic_target_list[i], timeout=15) as in_file, open(os.path.join(w_dir,
+                            current_url=twic_target_list[i]
+                            requrl=urllib.request.Request(current_url, headers=headers)
+                            with urllib.request.urlopen(requrl, timeout=15) as in_file, open(os.path.join(w_dir,
                                                         twic_file_list[i]), 'wb') as out_file:
                                 shutil.copyfileobj(in_file, out_file)
                             twic_dl_issue = twic_digit.search(twic_file_list[i])
@@ -1675,7 +1693,7 @@ message_frame.grid(column=0, row=0, columnspan=4, padx=5, pady=5)
 message_frame["state"] = "normal"
 
 message_frame.insert(END, "pgn2scid " + VERSION + "\n",  "center")
-message_frame.insert(END, "Copyright (c) 2017 - 2020 by Andreas Kreisig\n", "center")
+message_frame.insert(END, "Copyright (c) 2017 - 2021 by Andreas Kreisig\n", "center")
 message_frame.insert(END, "Released under the terms of the MIT License \n", "center")
 message_frame.insert(END, "This program comes with absolutely NO WARRANTY!\n", "center")
 message_frame.insert(END, "pgnscid, scmerge copyright (c) by Shane Hudson\n", "center")
