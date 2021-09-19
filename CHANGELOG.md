@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.8](https://github.com/CasualPyDev/pgn2scid/releases/tag/v1.8) - 2021-09-19
+## [1.8](https://github.com/CasualPyDev/pgn2scid/releases/tag/1.8) - 2021-09-19
 
 ### Changed
 - User-Agent request header added 
