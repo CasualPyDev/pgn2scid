@@ -26,10 +26,6 @@
 
 import sys
 
-if float(sys.version[:3]) < 3.4:
-    sys.stderr.write("\nThis program requires Python 3.4 or above!\n\n")
-    sys.exit(1)
-
 from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
